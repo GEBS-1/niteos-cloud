@@ -1,0 +1,12 @@
+{
+  "id": "legacy_3",
+  "name": "Шаблон 3",
+  "product_id": "ntpark",
+  "product_name": "NT-park STEP",
+  "ies_constant": "IES_NT_PARK",
+  "ies_filename": "NT-STEP 100 A3 Д120 4000K.ies",
+  "ies_file_copied": "NT-STEP 100 A3 Д120 4000K.ies",
+  "reference_file": "reference.jpg",
+  "prompt_rules_file": "prompt_rules.txt",
+  "prompt_full_file": "prompt_full.txt"
+}

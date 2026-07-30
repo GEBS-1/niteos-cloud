@@ -1,0 +1,14 @@
+[general]
+enable_bucket = true
+caption_extension = ".txt"
+shuffle_caption = false
+keep_tokens = 1
+
+[[datasets]]
+resolution = 1024
+batch_size = 1
+bucket_reso_steps = 64
+
+  [[datasets.subsets]]
+  image_dir = "IMAGE_DIR_PLACEHOLDER"
+  num_repeats = 10

@@ -1,0 +1,2 @@
+# Legacy: add detailed lighting rules here.
+# Current backend uses prompt_full.txt only.

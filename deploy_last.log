@@ -1,0 +1,78 @@
+﻿Building archive: C:\Users\User\AppData\Local\Temp\tmpt4plmhc4.tar.gz
+Archive size: 88.83 MB
+Connecting to root@194.226.187.101 ...
+Uploading to /tmp/niteos-deploy.tar.gz ...
+Upload OK (88.83 MB)
+
+$ 
+set -euo pipefail
+systemctl stop niteos-cloud 2>/dev/null || true
+rm -rf /opt/niteos-cloud
+mkdir -p /opt/niteos-cloud
+tar xzf /tmp/niteos-deploy.tar.gz -C /opt/niteos-cloud
+rm -f /tmp/niteos-deploy.tar.gz
+chmod 600 /opt/niteos-cloud/.env 2>/dev/null || true
+apt-get update -qq
+apt-get install -y -qq python3 python3-venv python3-pip nginx rsync >/dev/null
+python3 -m venv /opt/niteos-cloud/.venv
+/opt/niteos-cloud/.venv/bin/pip install --upgrade pip -q
+/opt/niteos-cloud/.venv/bin/pip install -r /opt/niteos-cloud/requirements_cloud.txt -q
+chown -R www-data:www-data /opt/niteos-cloud
+cat > /etc/systemd/system/niteos-cloud.service <<'EOF'
+[Unit]
+Description=NITEOS Concept Light Cloud
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/niteos-cloud
+EnvironmentFile=/opt/niteos-cloud/.env
+ExecStart=/opt/niteos-cloud/.venv/bin/uvicorn cloud_app:app --host 127.0.0.1 --port 8080
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+cat > /etc/nginx/sites-available/niteos-cloud <<'EOF'
+server {
+    listen 80;
+    server_name _;
+    client_max_body_size 50m;
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+EOF
+ln -sf /etc/nginx/sites-available/niteos-cloud /etc/nginx/sites-enabled/niteos-cloud
+rm -f /etc/nginx/sites-enabled/default
+systemctl daemon-reload
+systemctl enable niteos-cloud
+systemctl restart niteos-cloud
+nginx -t
+systemctl reload nginx
+systemctl --no-pager --full status niteos-cloud || true
+curl -s -o /dev/null -w "HTTP %{http_code}\n" http://127.0.0.1:8080/ || true
+
+python : Traceback (most recent call last):
+C:\Users\User\AppData\Local\Temp\ps-script-c9ef6d6b-fc77-4853-9ffe-0f48e7814442.ps1:125 знак:1
++ python "d:\Python\Github\niteos_concept_light_v140_rgbw_neutral_fix\d ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "d:\Python\Github\niteos_concept_light_v140_rgbw_neutral_fix\deploy_remote.py", line 185, in <module>
+    raise SystemExit(main())
+  File "d:\Python\Github\niteos_concept_light_v140_rgbw_neutral_fix\deploy_remote.py", line 173, in main
+    code, _, err = run(client, commands, timeout=900)
+  File "d:\Python\Github\niteos_concept_light_v140_rgbw_neutral_fix\deploy_remote.py", line 72, in run
+    print(out.rstrip())
+  File "C:\Users\User\AppData\Local\Programs\Python\Python310\lib\encodings\cp1251.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u25cf' in position 0: character maps to <undefined>

@@ -1,0 +1,14 @@
+{
+  "id": "xray_columns",
+  "name": "В простенках",
+  "description": "Прожекторы между колоннами.",
+  "category": "projector",
+  "product_id": "xray",
+  "product_name": "X-RAY ARCH",
+  "ies_constant": "IES_XRAY",
+  "ies_filename": "NT-WAY 170 (Л) Г61 5000К, 4000К.ies",
+  "ies_file_copied": "NT-WAY 170 (Л) Г61 5000К, 4000К.ies",
+  "reference_file": "reference.png",
+  "prompt_rules_file": "prompt_rules.txt",
+  "prompt_full_file": "prompt_full.txt"
+}

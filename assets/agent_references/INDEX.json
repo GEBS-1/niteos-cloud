@@ -1,0 +1,577 @@
+{
+  "version": 1,
+  "count": 43,
+  "items": [
+    {
+      "id": "aref_03_062742ee",
+      "filename": "ref_03_062742ee.png",
+      "thumb": "ref_03_062742ee.jpg",
+      "cluster": "mixed_commercial",
+      "title": "mixed_commercial #3",
+      "scenario_id": "linear_mix_cv",
+      "product_ids": [
+        "magistral",
+        "xray"
+      ],
+      "placement_notes": "Contour + glazing glow + local accents.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-062742ee-427d-4cb6-a25c-8f6add5b494e.png"
+    },
+    {
+      "id": "aref_04_109395e3",
+      "filename": "ref_04_109395e3.png",
+      "thumb": "ref_04_109395e3.jpg",
+      "cluster": "vertical_wash_stagger",
+      "title": "vertical_wash_stagger #4",
+      "scenario_id": "xray_columns",
+      "product_ids": [
+        "xray"
+      ],
+      "placement_notes": "Staggered vertical wash on masonry piers.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-109395e3-f26e-473d-a4dd-f2dac947d328.png"
+    },
+    {
+      "id": "aref_05_11637d64",
+      "filename": "ref_05_11637d64.png",
+      "thumb": "ref_05_11637d64.jpg",
+      "cluster": "classical_heritage",
+      "title": "classical_heritage #5",
+      "scenario_id": "administrative_horizontal_lines",
+      "product_ids": [
+        "xray",
+        "magistral"
+      ],
+      "placement_notes": "Pilaster uplights + cornice crown.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-11637d64-232b-4116-b58f-2d04857d7f90.png"
+    },
+    {
+      "id": "aref_06_12856616",
+      "filename": "ref_06_12856616.png",
+      "thumb": "ref_06_12856616.jpg",
+      "cluster": "mixed_commercial",
+      "title": "mixed_commercial #6",
+      "scenario_id": "linear_mix_cv",
+      "product_ids": [
+        "magistral",
+        "xray"
+      ],
+      "placement_notes": "Contour + glazing glow + local accents.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-12856616-1ba1-4eae-8908-0bc97aa7b756.png"
+    },
+    {
+      "id": "aref_07_15b4d265",
+      "filename": "ref_07_15b4d265.png",
+      "thumb": "ref_07_15b4d265.jpg",
+      "cluster": "linear_contour_balcony",
+      "title": "linear_contour_balcony #7",
+      "scenario_id": "residential_combined",
+      "product_ids": [
+        "magistral"
+      ],
+      "placement_notes": "Continuous balcony-edge lines, no gaps at corners.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-15b4d265-6b33-483f-a87c-bd32e91e65f5.png"
+    },
+    {
+      "id": "aref_08_18108616",
+      "filename": "ref_08_18108616.png",
+      "thumb": "ref_08_18108616.jpg",
+      "cluster": "linear_contour_balcony",
+      "title": "linear_contour_balcony #8",
+      "scenario_id": "residential_combined",
+      "product_ids": [
+        "magistral"
+      ],
+      "placement_notes": "Continuous balcony-edge lines, no gaps at corners.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-18108616-3325-4c5b-be2c-f47c7833c72d.png"
+    },
+    {
+      "id": "aref_09_18930931",
+      "filename": "ref_09_18930931.png",
+      "thumb": "ref_09_18930931.jpg",
+      "cluster": "linear_contour_balcony",
+      "title": "linear_contour_balcony #9",
+      "scenario_id": "residential_combined",
+      "product_ids": [
+        "magistral"
+      ],
+      "placement_notes": "Continuous balcony-edge lines, no gaps at corners.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-18930931-ccfc-49cb-9d6a-01783477391a.png"
+    },
+    {
+      "id": "aref_11_27cb4a64",
+      "filename": "ref_11_27cb4a64.png",
+      "thumb": "ref_11_27cb4a64.jpg",
+      "cluster": "linear_contour_balcony",
+      "title": "linear_contour_balcony #11",
+      "scenario_id": "residential_combined",
+      "product_ids": [
+        "magistral"
+      ],
+      "placement_notes": "Continuous balcony-edge lines, no gaps at corners.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-27cb4a64-489e-41b2-afae-1a89c3faa57e.png"
+    },
+    {
+      "id": "aref_12_2dec270d",
+      "filename": "ref_12_2dec270d.png",
+      "thumb": "ref_12_2dec270d.jpg",
+      "cluster": "linear_contour_balcony",
+      "title": "linear_contour_balcony #12",
+      "scenario_id": "residential_combined",
+      "product_ids": [
+        "magistral"
+      ],
+      "placement_notes": "Continuous balcony-edge lines, no gaps at corners.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-2dec270d-0588-4062-b9bb-ce3952d91636.png"
+    },
+    {
+      "id": "aref_13_2efa8f1f",
+      "filename": "ref_13_2efa8f1f.png",
+      "thumb": "ref_13_2efa8f1f.jpg",
+      "cluster": "linear_contour_balcony",
+      "title": "linear_contour_balcony #13",
+      "scenario_id": "residential_combined",
+      "product_ids": [
+        "magistral"
+      ],
+      "placement_notes": "Continuous balcony-edge lines, no gaps at corners.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-2efa8f1f-b88c-43df-9f6b-e9c625ccb6ae.png"
+    },
+    {
+      "id": "aref_14_2f065303",
+      "filename": "ref_14_2f065303.png",
+      "thumb": "ref_14_2f065303.jpg",
+      "cluster": "portal_entrance",
+      "title": "portal_entrance #14",
+      "scenario_id": "historic_building_projectors",
+      "product_ids": [
+        "xray"
+      ],
+      "placement_notes": "Entrance/portal accent without reshaping facade.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-2f065303-5edd-4778-8318-6ec4e61ad5e9.png"
+    },
+    {
+      "id": "aref_15_320cad37",
+      "filename": "ref_15_320cad37.png",
+      "thumb": "ref_15_320cad37.jpg",
+      "cluster": "linear_contour_balcony",
+      "title": "linear_contour_balcony #15",
+      "scenario_id": "residential_combined",
+      "product_ids": [
+        "magistral"
+      ],
+      "placement_notes": "Continuous balcony-edge lines, no gaps at corners.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-320cad37-9245-4210-b4c7-6b63bc75221c.png"
+    },
+    {
+      "id": "aref_16_35cb6052",
+      "filename": "ref_16_35cb6052.png",
+      "thumb": "ref_16_35cb6052.jpg",
+      "cluster": "linear_contour_balcony",
+      "title": "linear_contour_balcony #16",
+      "scenario_id": "residential_combined",
+      "product_ids": [
+        "magistral"
+      ],
+      "placement_notes": "Continuous balcony-edge lines, no gaps at corners.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-35cb6052-9d1c-4998-ad30-f5072b7485ed.png"
+    },
+    {
+      "id": "aref_17_372479e0",
+      "filename": "ref_17_372479e0.png",
+      "thumb": "ref_17_372479e0.jpg",
+      "cluster": "vertical_updown_piers",
+      "title": "vertical_updown_piers #17",
+      "scenario_id": "linear_cornice",
+      "product_ids": [
+        "xray"
+      ],
+      "placement_notes": "Up-down cones on existing piers only.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-372479e0-4c40-4720-8447-036163501d76.png"
+    },
+    {
+      "id": "aref_18_37c2b99c",
+      "filename": "ref_18_37c2b99c.png",
+      "thumb": "ref_18_37c2b99c.jpg",
+      "cluster": "vertical_wash_stagger",
+      "title": "vertical_wash_stagger #18",
+      "scenario_id": "xray_columns",
+      "product_ids": [
+        "xray"
+      ],
+      "placement_notes": "Staggered vertical wash on masonry piers.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-37c2b99c-b733-400b-89d1-d589d20025a4.png"
+    },
+    {
+      "id": "aref_19_3979de7b",
+      "filename": "ref_19_3979de7b.png",
+      "thumb": "ref_19_3979de7b.jpg",
+      "cluster": "linear_contour_balcony",
+      "title": "linear_contour_balcony #19",
+      "scenario_id": "residential_combined",
+      "product_ids": [
+        "magistral"
+      ],
+      "placement_notes": "Continuous balcony-edge lines, no gaps at corners.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-3979de7b-189f-4362-9c32-4667c50ce49f.png"
+    },
+    {
+      "id": "aref_20_3b7341ba",
+      "filename": "ref_20_3b7341ba.png",
+      "thumb": "ref_20_3b7341ba.jpg",
+      "cluster": "linear_contour_balcony",
+      "title": "linear_contour_balcony #20",
+      "scenario_id": "residential_combined",
+      "product_ids": [
+        "magistral"
+      ],
+      "placement_notes": "Continuous balcony-edge lines, no gaps at corners.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-3b7341ba-fa9e-43c4-b28b-afa77af156e9.png"
+    },
+    {
+      "id": "aref_21_3c1e7461",
+      "filename": "ref_21_3c1e7461.png",
+      "thumb": "ref_21_3c1e7461.jpg",
+      "cluster": "linear_cornice_bands",
+      "title": "linear_cornice_bands #21",
+      "scenario_id": "business_center_linear_cornice",
+      "product_ids": [
+        "magistral"
+      ],
+      "placement_notes": "Continuous cornice and floor belts.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-3c1e7461-1d65-4c1d-84cd-a23f24a68336.png"
+    },
+    {
+      "id": "aref_22_452022bd",
+      "filename": "ref_22_452022bd.png",
+      "thumb": "ref_22_452022bd.jpg",
+      "cluster": "linear_contour_balcony",
+      "title": "linear_contour_balcony #22",
+      "scenario_id": "residential_combined",
+      "product_ids": [
+        "magistral"
+      ],
+      "placement_notes": "Continuous balcony-edge lines, no gaps at corners.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-452022bd-20dc-4de5-bde0-150ae9000768.png"
+    },
+    {
+      "id": "aref_23_46c9330b",
+      "filename": "ref_23_46c9330b.png",
+      "thumb": "ref_23_46c9330b.jpg",
+      "cluster": "linear_cornice_bands",
+      "title": "linear_cornice_bands #23",
+      "scenario_id": "business_center_linear_cornice",
+      "product_ids": [
+        "magistral"
+      ],
+      "placement_notes": "Continuous cornice and floor belts.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-46c9330b-56ae-4027-818f-0f731d29ff17.png"
+    },
+    {
+      "id": "aref_24_54a10e17",
+      "filename": "ref_24_54a10e17.png",
+      "thumb": "ref_24_54a10e17.jpg",
+      "cluster": "linear_cornice_bands",
+      "title": "linear_cornice_bands #24",
+      "scenario_id": "business_center_linear_cornice",
+      "product_ids": [
+        "magistral"
+      ],
+      "placement_notes": "Continuous cornice and floor belts.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-54a10e17-53f2-485f-87f3-45a947c6ad21.png"
+    },
+    {
+      "id": "aref_25_5b45cf8e",
+      "filename": "ref_25_5b45cf8e.png",
+      "thumb": "ref_25_5b45cf8e.jpg",
+      "cluster": "vertical_wash_stagger",
+      "title": "vertical_wash_stagger #25",
+      "scenario_id": "xray_columns",
+      "product_ids": [
+        "xray"
+      ],
+      "placement_notes": "Staggered vertical wash on masonry piers.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-5b45cf8e-9e10-4a74-b781-43fd49d8ad32.png"
+    },
+    {
+      "id": "aref_26_5d94bf7c",
+      "filename": "ref_26_5d94bf7c.png",
+      "thumb": "ref_26_5d94bf7c.jpg",
+      "cluster": "classical_heritage",
+      "title": "classical_heritage #26",
+      "scenario_id": "administrative_horizontal_lines",
+      "product_ids": [
+        "xray",
+        "magistral"
+      ],
+      "placement_notes": "Pilaster uplights + cornice crown.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-5d94bf7c-5fd5-414c-b446-5303af478267.png"
+    },
+    {
+      "id": "aref_27_5e80c1e5",
+      "filename": "ref_27_5e80c1e5.png",
+      "thumb": "ref_27_5e80c1e5.jpg",
+      "cluster": "mixed_commercial",
+      "title": "mixed_commercial #27",
+      "scenario_id": "linear_mix_cv",
+      "product_ids": [
+        "magistral",
+        "xray"
+      ],
+      "placement_notes": "Contour + glazing glow + local accents.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-5e80c1e5-9cc0-4d2b-b087-36d0dcf79d84.png"
+    },
+    {
+      "id": "aref_28_672a7e22",
+      "filename": "ref_28_672a7e22.png",
+      "thumb": "ref_28_672a7e22.jpg",
+      "cluster": "vertical_wash_stagger",
+      "title": "vertical_wash_stagger #28",
+      "scenario_id": "xray_columns",
+      "product_ids": [
+        "xray"
+      ],
+      "placement_notes": "Staggered vertical wash on masonry piers.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-672a7e22-a0f7-47e5-8133-b37a643ebfc0.png"
+    },
+    {
+      "id": "aref_31_688c26df",
+      "filename": "ref_31_688c26df.png",
+      "thumb": "ref_31_688c26df.jpg",
+      "cluster": "vertical_updown_piers",
+      "title": "vertical_updown_piers #31",
+      "scenario_id": "linear_cornice",
+      "product_ids": [
+        "xray"
+      ],
+      "placement_notes": "Up-down cones on existing piers only.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-688c26df-6751-4f1e-9b28-e687cae83520.png"
+    },
+    {
+      "id": "aref_32_6da22259",
+      "filename": "ref_32_6da22259.png",
+      "thumb": "ref_32_6da22259.jpg",
+      "cluster": "vertical_wash_stagger",
+      "title": "vertical_wash_stagger #32",
+      "scenario_id": "xray_columns",
+      "product_ids": [
+        "xray"
+      ],
+      "placement_notes": "Staggered vertical wash on masonry piers.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-6da22259-84ac-40c5-a298-10a7462d19f4.png"
+    },
+    {
+      "id": "aref_33_736edc98",
+      "filename": "ref_33_736edc98.png",
+      "thumb": "ref_33_736edc98.jpg",
+      "cluster": "classical_heritage",
+      "title": "classical_heritage #33",
+      "scenario_id": "administrative_horizontal_lines",
+      "product_ids": [
+        "xray",
+        "magistral"
+      ],
+      "placement_notes": "Pilaster uplights + cornice crown.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-736edc98-37d0-41f0-8325-bc9a6bfbddc1.png"
+    },
+    {
+      "id": "aref_34_7891a13a",
+      "filename": "ref_34_7891a13a.png",
+      "thumb": "ref_34_7891a13a.jpg",
+      "cluster": "classical_heritage",
+      "title": "classical_heritage #34",
+      "scenario_id": "administrative_horizontal_lines",
+      "product_ids": [
+        "xray",
+        "magistral"
+      ],
+      "placement_notes": "Pilaster uplights + cornice crown.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-7891a13a-051f-4d31-9fae-7d8eb73dc701.png"
+    },
+    {
+      "id": "aref_35_80c43963",
+      "filename": "ref_35_80c43963.png",
+      "thumb": "ref_35_80c43963.jpg",
+      "cluster": "portal_entrance",
+      "title": "portal_entrance #35",
+      "scenario_id": "historic_building_projectors",
+      "product_ids": [
+        "xray"
+      ],
+      "placement_notes": "Entrance/portal accent without reshaping facade.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-80c43963-b7ec-4938-b779-bc2229808b40.png"
+    },
+    {
+      "id": "aref_36_8736355b",
+      "filename": "ref_36_8736355b.png",
+      "thumb": "ref_36_8736355b.jpg",
+      "cluster": "linear_contour_balcony",
+      "title": "linear_contour_balcony #36",
+      "scenario_id": "residential_combined",
+      "product_ids": [
+        "magistral"
+      ],
+      "placement_notes": "Continuous balcony-edge lines, no gaps at corners.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-8736355b-1b01-478f-a562-a428f722e514.png"
+    },
+    {
+      "id": "aref_37_89332839",
+      "filename": "ref_37_89332839.png",
+      "thumb": "ref_37_89332839.jpg",
+      "cluster": "classical_heritage",
+      "title": "classical_heritage #37",
+      "scenario_id": "administrative_horizontal_lines",
+      "product_ids": [
+        "xray",
+        "magistral"
+      ],
+      "placement_notes": "Pilaster uplights + cornice crown.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-89332839-35ab-4e69-945e-0a384005ca43.png"
+    },
+    {
+      "id": "aref_38_899e6c15",
+      "filename": "ref_38_899e6c15.png",
+      "thumb": "ref_38_899e6c15.jpg",
+      "cluster": "mixed_commercial",
+      "title": "mixed_commercial #38",
+      "scenario_id": "linear_mix_cv",
+      "product_ids": [
+        "magistral",
+        "xray"
+      ],
+      "placement_notes": "Contour + glazing glow + local accents.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-899e6c15-4334-490a-bdd3-17be092a7ecb.png"
+    },
+    {
+      "id": "aref_39_8a5c0dda",
+      "filename": "ref_39_8a5c0dda.png",
+      "thumb": "ref_39_8a5c0dda.jpg",
+      "cluster": "classical_heritage",
+      "title": "classical_heritage #39",
+      "scenario_id": "administrative_horizontal_lines",
+      "product_ids": [
+        "xray",
+        "magistral"
+      ],
+      "placement_notes": "Pilaster uplights + cornice crown.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-8a5c0dda-4bf2-439c-9dbc-9c1227baf192.png"
+    },
+    {
+      "id": "aref_40_95237ebd",
+      "filename": "ref_40_95237ebd.png",
+      "thumb": "ref_40_95237ebd.jpg",
+      "cluster": "vertical_updown_piers",
+      "title": "vertical_updown_piers #40",
+      "scenario_id": "linear_cornice",
+      "product_ids": [
+        "xray"
+      ],
+      "placement_notes": "Up-down cones on existing piers only.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-95237ebd-e5b8-44f5-802b-a5ceae9d3919.png"
+    },
+    {
+      "id": "aref_41_954fe84e",
+      "filename": "ref_41_954fe84e.png",
+      "thumb": "ref_41_954fe84e.jpg",
+      "cluster": "vertical_updown_piers",
+      "title": "vertical_updown_piers #41",
+      "scenario_id": "linear_cornice",
+      "product_ids": [
+        "xray"
+      ],
+      "placement_notes": "Up-down cones on existing piers only.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-954fe84e-a19e-4375-bbcd-a9677e678ba2.png"
+    },
+    {
+      "id": "aref_42_a0fcea68",
+      "filename": "ref_42_a0fcea68.png",
+      "thumb": "ref_42_a0fcea68.jpg",
+      "cluster": "classical_heritage",
+      "title": "classical_heritage #42",
+      "scenario_id": "administrative_horizontal_lines",
+      "product_ids": [
+        "xray",
+        "magistral"
+      ],
+      "placement_notes": "Pilaster uplights + cornice crown.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-a0fcea68-0623-49ba-81d7-af74a36c348c.png"
+    },
+    {
+      "id": "aref_43_a47325eb",
+      "filename": "ref_43_a47325eb.png",
+      "thumb": "ref_43_a47325eb.jpg",
+      "cluster": "vertical_wash_stagger",
+      "title": "vertical_wash_stagger #43",
+      "scenario_id": "xray_columns",
+      "product_ids": [
+        "xray"
+      ],
+      "placement_notes": "Staggered vertical wash on masonry piers.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-a47325eb-9a9a-4ddb-b324-24a9b9abebd2.png"
+    },
+    {
+      "id": "aref_44_a4b60921",
+      "filename": "ref_44_a4b60921.png",
+      "thumb": "ref_44_a4b60921.jpg",
+      "cluster": "linear_cornice_bands",
+      "title": "linear_cornice_bands #44",
+      "scenario_id": "business_center_linear_cornice",
+      "product_ids": [
+        "magistral"
+      ],
+      "placement_notes": "Continuous cornice and floor belts.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-a4b60921-681b-4a31-a5b6-11002e055c4d.png"
+    },
+    {
+      "id": "aref_45_aa690eea",
+      "filename": "ref_45_aa690eea.png",
+      "thumb": "ref_45_aa690eea.jpg",
+      "cluster": "vertical_updown_piers",
+      "title": "vertical_updown_piers #45",
+      "scenario_id": "linear_cornice",
+      "product_ids": [
+        "xray"
+      ],
+      "placement_notes": "Up-down cones on existing piers only.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-aa690eea-2290-426d-a31f-2192cb64b7c9.png"
+    },
+    {
+      "id": "aref_46_aaf876aa",
+      "filename": "ref_46_aaf876aa.png",
+      "thumb": "ref_46_aaf876aa.jpg",
+      "cluster": "portal_entrance",
+      "title": "portal_entrance #46",
+      "scenario_id": "historic_building_projectors",
+      "product_ids": [
+        "xray"
+      ],
+      "placement_notes": "Entrance/portal accent without reshaping facade.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-aaf876aa-7c98-4177-a1d0-8a73c7667349.png"
+    },
+    {
+      "id": "aref_49_b5c2acce",
+      "filename": "ref_49_b5c2acce.png",
+      "thumb": "ref_49_b5c2acce.jpg",
+      "cluster": "portal_entrance",
+      "title": "portal_entrance #49",
+      "scenario_id": "historic_building_projectors",
+      "product_ids": [
+        "xray"
+      ],
+      "placement_notes": "Entrance/portal accent without reshaping facade.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-b5c2acce-8459-45cf-a81a-72a442faa52b.png"
+    },
+    {
+      "id": "aref_50_b5f65ad7",
+      "filename": "ref_50_b5f65ad7.png",
+      "thumb": "ref_50_b5f65ad7.jpg",
+      "cluster": "linear_cornice_bands",
+      "title": "linear_cornice_bands #50",
+      "scenario_id": "business_center_linear_cornice",
+      "product_ids": [
+        "magistral"
+      ],
+      "placement_notes": "Continuous cornice and floor belts.",
+      "source_name": "c__Users_User_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_image-b5f65ad7-9d48-4799-84c4-f6194f78d5bb.png"
+    }
+  ],
+  "updated_note": "Pruned to files present in examples/ after user cleanup"
+}

@@ -1,0 +1,16 @@
+[Unit]
+Description=NITEOS Concept Light Cloud
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/niteos-cloud
+EnvironmentFile=/opt/niteos-cloud/.env
+ExecStart=/opt/niteos-cloud/.venv/bin/uvicorn cloud_app:app --host 127.0.0.1 --port 8080
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

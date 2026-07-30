@@ -1,0 +1,14 @@
+{
+  "id": "linear_top_bottom",
+  "name": "Верх и низ",
+  "description": "Карниз + линия на цоколе.",
+  "category": "linear",
+  "product_id": "magistral",
+  "product_name": "MAGISTRAL v 3.0 AI 70",
+  "ies_constant": "IES_LINEAR",
+  "ies_filename": "МАГИСТРАЛЬ 205 170 ЛмВт [КОНСОЛЬ] Д.ies",
+  "ies_file_copied": "МАГИСТРАЛЬ 205 170 ЛмВт [КОНСОЛЬ] Д.ies",
+  "reference_file": "reference.png",
+  "prompt_rules_file": "prompt_rules.txt",
+  "prompt_full_file": "prompt_full.txt"
+}

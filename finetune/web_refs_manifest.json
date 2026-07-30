@@ -1,0 +1,42 @@
+[
+  {
+    "id": "local_fixture_linear_cornice",
+    "title": "Projectors up-down (fixture)",
+    "scenario_id": "linear_cornice",
+    "local_path": "exports/mvp-fixtures/scenarios/linear_cornice.png",
+    "url": "",
+    "caption": "Night facade with up-down projector accents on piers, no contour LED crown.",
+    "attribution": "NITEOS mvp-fixtures",
+    "license": "internal"
+  },
+  {
+    "id": "local_fixture_xray_wash",
+    "title": "Wash linear (fixture)",
+    "scenario_id": "xray_wash",
+    "local_path": "exports/mvp-fixtures/scenarios/xray_wash.png",
+    "url": "",
+    "caption": "Soft washing architectural facade lighting, even planes, night presentation.",
+    "attribution": "NITEOS mvp-fixtures",
+    "license": "internal"
+  },
+  {
+    "id": "local_fixture_hotel_combined",
+    "title": "Hotel combined (fixture)",
+    "scenario_id": "hotel_combined",
+    "local_path": "exports/mvp-fixtures/scenarios/hotel_combined.png",
+    "url": "",
+    "caption": "Combined cornice line and vertical accents on classical hotel facade at night.",
+    "attribution": "NITEOS mvp-fixtures",
+    "license": "internal"
+  },
+  {
+    "id": "local_viz_01",
+    "title": "Viz example 01",
+    "scenario_id": "viz_example",
+    "local_path": "assets/viz_examples/examples/01_1.jpg",
+    "url": "",
+    "caption": "Curated architectural lighting look reference for NITEOS auto mode.",
+    "attribution": "NITEOS viz_examples",
+    "license": "internal"
+  }
+]
