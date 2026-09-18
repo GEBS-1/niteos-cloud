@@ -21,11 +21,31 @@ AGENT_STUDIO_HTML = r"""
     .btn.secondary{background:#1a222c;color:var(--text);border:1px solid var(--line)}
     .btn.accent{background:linear-gradient(135deg,#f5b942,#e88a12);color:#1a1000}
     .btn:disabled{opacity:.45;cursor:not-allowed}
-    .header-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;position:relative;z-index:6}
-    .layout{display:grid;grid-template-columns:minmax(240px,1fr) minmax(320px,1.4fr) minmax(280px,1fr);gap:14px;padding:14px;min-height:calc(100vh - 64px)}
+    .header-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;position:relative;z-index:6;justify-content:flex-end}
+    .sales-hint{max-width:min(380px,56vw);font-size:12px;line-height:1.4;color:var(--muted);text-align:right}
+    .sales-hint a{color:var(--accent);font-weight:700;text-decoration:none;white-space:nowrap}
+    .sales-hint a:hover{text-decoration:underline}
+    .layout{display:grid;grid-template-columns:minmax(220px,.9fr) minmax(340px,1.45fr) minmax(300px,1.05fr);gap:14px;padding:14px;min-height:calc(100vh - 64px)}
     @media(max-width:1100px){.layout{grid-template-columns:1fr}}
     .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px;min-height:0}
+    .card.work-col{border-color:var(--line)}
+    .card.chat-col{border-color:var(--line)}
+    .col-kicker{display:block;width:fit-content;max-width:100%;margin:0;padding:0;border:0;background:none;box-shadow:none;font-size:11px;font-weight:700;letter-spacing:.02em;color:var(--muted);line-height:1.3}
+    .col-kicker.work{color:#9ec5ff}
+    .col-kicker.chat-label{color:var(--accent)}
     .card h2{margin:0;font-size:15px}
+    .principle-note{padding:10px 12px;border-radius:12px;background:#121820;border:1px solid #2f3a46;font-size:12px;line-height:1.45;color:#c9d5e0}
+    .principle-note b{color:#fff}
+    .max-support-card{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;border:1px solid #3a4552;border-bottom:3px solid var(--accent);background:#0a1016;text-decoration:none;color:inherit}
+    .max-support-card:hover{border-color:var(--accent)}
+    .max-support-card img{width:52px;height:52px;border-radius:8px;background:#fff;flex-shrink:0}
+    .max-support-card b{display:block;font-size:13px;color:#fff;margin:0 0 2px}
+    .max-support-card span{font-size:11px;color:var(--muted);line-height:1.4}
+    .tour-compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 4px}
+    .tour-compare figure{margin:0}
+    .tour-compare img{width:100%;height:88px;object-fit:cover;border-radius:8px;border:1px solid #3a4654;background:#05070a;display:block}
+    .tour-compare figcaption{font-size:10px;color:var(--muted);margin-top:4px;text-align:center}
+    .tour-demo-img{width:100%;max-height:120px;object-fit:cover;border-radius:8px;border:1px solid #3a4654;margin:8px 0 4px;display:block}
     .preview{width:100%;border-radius:10px;background:#05070a;border:1px solid var(--line);object-fit:contain;max-height:280px}
     .preview.lg{max-height:520px;min-height:280px}
     .tags{display:flex;flex-wrap:wrap;gap:6px}
@@ -53,10 +73,20 @@ AGENT_STUDIO_HTML = r"""
     .status.err{border-color:#c45;color:#f0a0a0}
     .hist{display:flex;gap:8px;overflow:auto;padding-bottom:4px}
     .hist img{width:72px;height:54px;object-fit:cover;border-radius:8px;border:1px solid var(--line);cursor:pointer}
-    .hist-item{flex:0 0 auto;width:86px;border:1px solid var(--line);border-radius:10px;background:#0a1016;padding:5px;cursor:pointer;color:var(--muted);font-size:10px;text-align:left}
+    .hist-item{flex:0 0 auto;width:128px;border:1px solid var(--line);border-radius:10px;background:#0a1016;padding:5px;cursor:pointer;color:var(--muted);font-size:10px;text-align:left;position:relative}
     .hist-item.active{border-color:var(--accent);box-shadow:0 0 0 1px rgba(245,185,66,.35)}
-    .hist-item img{width:100%;height:54px;object-fit:cover;border-radius:6px;display:block;margin-bottom:4px;border:0}
+    .hist-item .hist-thumb{position:relative;width:100%;height:62px;margin-bottom:4px;border-radius:6px;overflow:hidden;background:#030405}
+    .hist-item .hist-thumb img{width:100%;height:100%;object-fit:cover;display:block;border:0;margin:0}
+    .hist-item .hist-thumb .hist-ann{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;mix-blend-mode:normal;opacity:.95}
+    .hist-item .hist-markup-tag{margin-top:2px;color:#4fd1c5;font-weight:700}
     .hist-item span{display:block;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .sales-hint a.phone-copy{color:var(--accent);text-decoration:underline;cursor:pointer;border:0;background:none;font:inherit;padding:0}
+    .sales-hint a.phone-copy:hover{color:#fff}
+    .hist-item .hist-vote{margin-top:3px;font-weight:700;white-space:normal}
+    .hist-item .hist-vote.like{color:#8fd48f}
+    .hist-item .hist-vote.dislike{color:#e89a9a}
+    .hist-item .hist-vote.pending{color:var(--accent)}
+    .hist-item .hist-comment{margin-top:2px;white-space:normal;max-height:2.5em;overflow:hidden}
     .hist-hint{font-size:12px;color:var(--muted);margin:0}
     input[type=file]{width:100%;font:inherit;color:var(--muted)}
     .hidden{display:none!important}
@@ -82,8 +112,48 @@ AGENT_STUDIO_HTML = r"""
     .markup-bar .btn.active.eraser{outline-color:#4fd1c5}
     .markup-bar .brush-size{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
     .markup-bar .brush-size input{width:100px}
+    .markup-next-step{display:none;margin-top:8px;padding:10px 12px;border:1px solid #3a6a78;border-radius:12px;background:#0d1a20;color:#d7eef4;font-size:13px;line-height:1.45}
+    .markup-next-step.open{display:block;animation:niteosPulseBorder 1.4s ease-in-out 2}
+    .markup-next-step b{color:#fff}
+    .markup-next-step .step-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+    .chat-col.awaiting-instruction{border-color:#4fd1c5;box-shadow:0 0 0 2px rgba(79,209,197,.28);animation:niteosPulseBorder 1.4s ease-in-out 3}
+    .chat-step-panel{display:none;padding:12px 14px;border-radius:14px;border:2px solid #4fd1c5;background:linear-gradient(180deg,#102428 0%,#0d1a20 100%);color:#e7f7fa;margin:0 0 10px}
+    .chat-step-panel.open{display:block}
+    .chat-step-panel .step-kicker{margin:0 0 4px;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#4fd1c5}
+    .chat-step-panel h3{margin:0 0 8px;font-size:17px;color:#fff;line-height:1.3}
+    .chat-step-panel ol{margin:0;padding-left:18px;color:#d7eef4;font-size:13px;line-height:1.55}
+    .chat-step-panel ol b{color:#fff}
+    .chat-step-panel .step-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+    .quick.awaiting{padding:10px;border-radius:14px;border:1px solid #3a6a78;background:#0a1418}
+    .quick.awaiting .quick-empty-hint{display:none}
+    .chat-input.needs-instruction{outline:2px solid #4fd1c5;outline-offset:2px;border-radius:12px}
+    .chat-input.needs-instruction textarea{border-color:#4fd1c5;box-shadow:0 0 0 3px rgba(79,209,197,.18)}
+    .chat-input .input-step-label{display:none;margin:0 0 4px;font-size:12px;font-weight:700;color:#4fd1c5}
+    .chat-input.needs-instruction .input-step-label{display:block}
+    .feedback-zone.blocking{border-color:#f5b942;box-shadow:0 0 0 3px rgba(245,185,66,.28)}
+    .feedback-gate{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,6,10,.82)}
+    .feedback-gate.open{display:flex}
+    .feedback-gate-card{max-width:440px;width:100%;background:#101820;border:2px solid #f5b942;border-radius:18px;padding:22px 20px 18px;box-shadow:0 24px 60px rgba(0,0,0,.55);text-align:center}
+    .feedback-gate-card h3{margin:0 0 8px;font-size:22px;color:#fff;line-height:1.25}
+    .feedback-gate-card p{margin:0 0 16px;color:var(--muted);font-size:14px;line-height:1.5}
+    .feedback-gate-card .gate-pending{margin:0 0 14px;padding:10px 12px;border-radius:10px;background:#1a2410;border:1px solid #3d5a20;color:#c8f0a0;font-size:13px;font-weight:700;line-height:1.4}
+    .feedback-gate-card .gate-pending.hidden{display:none}
+    .feedback-gate-card .gate-comment-wrap{margin:0 0 14px;text-align:left}
+    .feedback-gate-card .gate-comment-wrap label{display:block;margin:0 0 6px;font-size:12px;color:var(--muted)}
+    .feedback-gate-card .gate-comment-wrap textarea{width:100%;min-height:72px;resize:vertical;border-radius:10px;border:1px solid #3a4654;background:#090d12;color:var(--text);padding:10px;font:inherit}
+    .feedback-gate-votes{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:0 0 12px}
+    .feedback-gate-votes .btn{min-width:140px;font-size:15px;font-weight:800;padding:12px 16px}
+    .feedback-gate-votes .btn.like{border-color:#3d8f5a;background:#1f3d2a;color:#c8f0d4}
+    .feedback-gate-votes .btn.dislike{border-color:#c45;background:#3d1f24;color:#f0c0c0}
+    .feedback-gate-votes .btn:disabled{opacity:.55;cursor:wait}
+    .feedback-gate-status{min-height:18px;margin:0 0 8px;font-size:13px;color:var(--accent)}
+    .feedback-gate-status.err{color:#f0a0a0}
+    .feedback-gate-cancel{border:0;background:transparent;color:#8d97a3;font:inherit;font-size:13px;cursor:pointer;text-decoration:underline;padding:6px}
+    .feedback-gate-cancel:hover{color:#c9d5e0}
+    @keyframes niteosPulseBorder{0%,100%{box-shadow:0 0 0 0 rgba(79,209,197,.0)}50%{box-shadow:0 0 0 4px rgba(79,209,197,.25)}}
     .legend{font-size:12px;color:var(--muted);line-height:1.45}
-    .legend b.red{color:#ff6b6b}.legend b.cyan{color:#4fd1c5}
+    .legend b.red,.principle-note b.red{color:#ff6b6b}
+    .legend b.cyan,.principle-note b.cyan{color:#4fd1c5}
     .help-btn-promo{border:0;border-radius:10px;padding:10px 14px;font:inherit;font-weight:800;cursor:pointer;background:linear-gradient(135deg,#f5b942,#e88a12);color:#1a1000;text-decoration:none;display:inline-flex;align-items:center}
     .tour-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:90;display:none;align-items:center;justify-content:center;padding:18px}
     .tour-backdrop.open{display:flex}
@@ -92,11 +162,11 @@ AGENT_STUDIO_HTML = r"""
     .tour-modal p{margin:0 0 10px;color:var(--muted);line-height:1.5}
     .tour-modal ol{margin:0 0 14px;padding-left:18px;color:#dbe4ee;line-height:1.55}
     .tour-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-    .coach-root{position:fixed;inset:0;z-index:92;display:none;pointer-events:none}
-    .coach-root.open{display:block;pointer-events:auto}
-    .coach-shade{position:absolute;inset:0;background:rgba(3,6,10,.78);pointer-events:auto}
+    .coach-root{position:fixed;inset:0;z-index:110;display:none;pointer-events:none}
+    .coach-root.open{display:block;pointer-events:none}
+    .coach-shade{position:absolute;inset:0;background:rgba(3,6,10,.78);pointer-events:none}
     .coach-hole{position:absolute;border-radius:14px;box-shadow:0 0 0 9999px rgba(3,6,10,.78),0 0 0 3px rgba(245,185,66,.95),0 0 28px rgba(245,185,66,.35);pointer-events:none;transition:top .2s,left .2s,width .2s,height .2s}
-    .coach-card{position:fixed;z-index:93;width:min(360px,calc(100vw - 24px));background:#101820;border:1px solid #3a4654;border-radius:16px;padding:14px 14px 12px;box-shadow:0 18px 40px rgba(0,0,0,.5);color:var(--text)}
+    .coach-card{position:fixed;z-index:112;width:min(400px,calc(100vw - 24px));background:#101820;border:1px solid #3a4654;border-radius:16px;padding:14px 14px 12px;box-shadow:0 18px 40px rgba(0,0,0,.5);color:var(--text);pointer-events:auto}
     .coach-card .step-n{font-size:11px;color:var(--accent);font-weight:800;letter-spacing:.04em;margin:0 0 4px;text-transform:uppercase}
     .coach-card h3{margin:0 0 6px;font-size:16px}
     .coach-card p{margin:0 0 10px;color:var(--muted);font-size:13px;line-height:1.5}
@@ -105,8 +175,10 @@ AGENT_STUDIO_HTML = r"""
     .tour-pulse{animation:tourPulse 1.2s ease-in-out infinite}
     @keyframes tourPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,185,66,.55)}50%{box-shadow:0 0 0 8px rgba(245,185,66,0)}}
     .tour-target-live{position:relative;z-index:91!important}
+    .busy-overlay.tour-demo{z-index:100;pointer-events:none}
     .feedback-zone{border:1px solid var(--line);border-radius:14px;padding:12px;background:#0a1016;display:none;flex-direction:column;gap:8px}
     .feedback-zone.open{display:flex}
+    .feedback-zone.required{border-color:var(--accent);box-shadow:0 0 0 2px rgba(245,185,66,.22)}
     .feedback-votes{display:flex;gap:8px;flex-wrap:wrap}
     .feedback-votes button.active.like{background:#1f3d2a;border-color:#3d8f5a;color:#c8f0d4}
     .feedback-votes button.active.dislike{background:#3d1f24;border-color:#c45;color:#f0c0c0}
@@ -137,6 +209,31 @@ AGENT_STUDIO_HTML = r"""
     .guide-strip{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border-radius:12px;background:#0a1016;border:1px dashed #3a4654;font-size:12px;color:var(--muted);line-height:1.4}
     .guide-strip b{color:var(--text)}
     .guide-step{flex:1 1 140px;min-width:120px}
+    .tour-ghost-cursor{position:fixed;z-index:113;width:16px;height:16px;border-radius:50% 0 50% 50%;background:var(--accent);pointer-events:none;transform:rotate(-35deg);box-shadow:0 2px 10px rgba(0,0,0,.45);opacity:0;transition:top .45s ease,left .45s ease,opacity .2s}
+    .tour-ghost-cursor.on{opacity:1}
+    .tour-action-chip{display:inline-flex;align-items:center;gap:6px;margin:0 0 8px;padding:5px 10px;border-radius:999px;background:#1a2410;border:1px solid #3d5a20;color:#c8f0a0;font-size:11px;font-weight:700}
+    .tour-compare.live{position:relative}
+    .tour-compare.live figure{position:relative}
+    .tour-morph{position:relative;width:100%;height:110px;border-radius:8px;overflow:hidden;border:1px solid #3a4654;background:#05070a;margin:8px 0}
+    .tour-morph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    .tour-morph img.after{opacity:0;animation:tourMorph 2.4s ease-in-out infinite alternate}
+    @keyframes tourMorph{0%,35%{opacity:0}65%,100%{opacity:1}}
+    .tour-morph .labels{position:absolute;left:8px;bottom:8px;z-index:2;display:flex;gap:6px}
+    .tour-morph .labels span{font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;background:rgba(0,0,0,.65);color:#fff}
+    .dropzone.tour-demo-flash{border-color:var(--accent)!important;background:#151c10!important;animation:tourPulse 1s ease-in-out 2}
+    .btn.tour-click-flash{animation:tourClickFlash .7s ease 2}
+    @keyframes tourClickFlash{0%,100%{filter:none}40%{filter:brightness(1.25);transform:scale(1.04)}}
+    .result-stage.tour-playing{outline:2px solid var(--accent);outline-offset:1px}
+    .zone-intent-overlay{position:fixed;inset:0;z-index:98;display:none;align-items:flex-end;justify-content:center;padding:16px;background:rgba(4,8,12,.45);backdrop-filter:blur(2px)}
+    .zone-intent-overlay.open{display:flex}
+    .zone-intent-card{width:min(460px,100%);background:#101820;border:1px solid #3a4654;border-radius:16px;padding:16px;box-shadow:0 18px 48px rgba(0,0,0,.5);margin-bottom:max(12px,env(safe-area-inset-bottom))}
+    .zone-intent-card h3{margin:0 0 6px;font-size:17px;color:var(--text)}
+    .zone-intent-card .lead{margin:0 0 12px;font-size:13px;color:var(--muted);line-height:1.45}
+    .zone-intent-presets{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+    .zone-intent-presets .btn{font-size:12px;padding:8px 10px}
+    .zone-intent-card textarea{width:100%;min-height:78px;border-radius:10px;border:1px solid var(--line);background:#090d12;color:var(--text);padding:10px;font:inherit;resize:vertical}
+    .zone-intent-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .zone-intent-actions .btn{flex:1 1 120px}
   </style>
 </head>
 <body>
@@ -146,6 +243,26 @@ AGENT_STUDIO_HTML = r"""
     <div class="busy-spinner" aria-hidden="true"></div>
     <h3 id="busyTitle">Идёт генерация</h3>
     <p id="busyText">Подождите, агент обрабатывает запрос…</p>
+  </div>
+</div>
+<div class="zone-intent-overlay" id="zoneIntentOverlay" role="dialog" aria-modal="true" aria-labelledby="zoneIntentTitle">
+  <div class="zone-intent-card">
+    <h3 id="zoneIntentTitle">Что сделать с этой зоной?</h3>
+    <p class="lead" id="zoneIntentLead">Зона отмечена на фото. Выберите действие или напишите своими словами — отправим правку сразу отсюда.</p>
+    <div class="zone-intent-presets" id="zoneIntentPresets">
+      <button type="button" class="btn secondary" data-intent="remove" onclick="pickZoneIntent('убери ТОЛЬКО отмеченные светильники и лучи в этой зоне, остальные не трогай; стену восстанови как у соседних панелей')">Убрать свет</button>
+      <button type="button" class="btn secondary" data-intent="place" onclick="pickZoneIntent('проставь прожектор X-RAY только в отмеченной зоне, размер корпуса как у соседних архитектурных прожекторов, луч реалистичный; остальной фасад не трогай')">Поставить прожектор</button>
+      <button type="button" class="btn secondary" data-intent="linear" onclick="pickZoneIntent('проставь линейный светильник MAGISTRAL только в отмеченной зоне по архитектурной линии; остальной фасад не трогай')">Поставить линейный</button>
+      <button type="button" class="btn secondary" data-intent="change" onclick="pickZoneIntent('измени ТОЛЬКО отмеченные светильники в этой зоне, остальные не трогай')">Изменить</button>
+      <button type="button" class="btn secondary" data-intent="warmer" onclick="pickZoneIntent('сделай отмеченные лучи теплее и мягче, остальные светильники не трогай')">Теплее</button>
+    </div>
+    <label class="muted" for="zoneIntentInput" style="display:block;margin:0 0 6px;font-size:12px">Или напишите сами:</label>
+    <textarea id="zoneIntentInput" placeholder="Например: сюда прожектор у входа; убери верхний луч…"></textarea>
+    <div class="zone-intent-actions">
+      <button type="button" class="btn secondary" onclick="closeZoneIntentPanel(false)">Ещё рисую</button>
+      <button type="button" class="btn secondary" onclick="clearEditMarkup(); closeZoneIntentPanel(true)">Сбросить зону</button>
+      <button type="button" class="btn accent" id="zoneIntentSendBtn" onclick="submitZoneIntent()">Отправить правку</button>
+    </div>
   </div>
 </div>
 <div class="tour-backdrop" id="photoCheckModal" role="dialog" aria-label="Проверка фото перед генерацией">
@@ -175,7 +292,9 @@ AGENT_STUDIO_HTML = r"""
   <div class="header-actions row">
     <!-- К шаблонам временно скрыто
     <a class="btn secondary" href="/dealer" id="dealerLink">К шаблонам</a>
+    <a class="btn secondary" href="/video" id="videoLink">Видео</a>
     -->
+    <div class="sales-hint">Хотите узнать подробнее о цене этой концепции — номер <a href="#" class="phone-copy" id="contactPhoneLink" data-phone="8 843 202 21 39" onclick="return copyContactPhone(event)">8 843 202 21 39</a> <span class="muted" id="phoneCopyHint" style="display:none">скопировано</span></div>
     <button type="button" class="help-btn-promo" id="helpBtnPromo" onclick="openStudioTour()">Как это работает?</button>
     <button class="btn secondary" id="newProjectTour" onclick="createProject()">Новый проект</button>
   </div>
@@ -208,15 +327,25 @@ AGENT_STUDIO_HTML = r"""
   </div>
 </div>
 
-<div class="feedback-toast hidden" id="feedbackToast" role="dialog" aria-label="Оценка результата">
-  <button type="button" class="feedback-toast-close" onclick="dismissFeedbackToast()" aria-label="Закрыть">×</button>
-  <p class="feedback-toast-title">Как вам результат агента?</p>
-  <p class="feedback-toast-lead">Краткая оценка поможет обучить AI-студию.</p>
-  <div class="feedback-toast-actions">
-    <button type="button" class="btn secondary" onclick="quickFeedbackFromToast('like')">Нравится</button>
-    <button type="button" class="btn secondary" onclick="quickFeedbackFromToast('dislike')">Не нравится</button>
-    <button type="button" class="btn secondary" onclick="dismissFeedbackToast(); openFeedbackZone()">Подробнее</button>
+<div class="feedback-gate" id="feedbackGate" role="dialog" aria-modal="true" aria-labelledby="feedbackGateTitle">
+  <div class="feedback-gate-card">
+    <h3 id="feedbackGateTitle">Поставьте оценку</h3>
+    <p id="feedbackGateLead">Без оценки нельзя продолжить: ни генерацию, ни правку, ни новый проект.</p>
+    <div class="gate-pending hidden" id="feedbackGatePending">После оценки сразу продолжим ваш запрос.</div>
+    <div class="gate-comment-wrap">
+      <label for="feedbackGateComment">Комментарий <span style="font-weight:400">(необязательно)</span></label>
+      <textarea id="feedbackGateComment" placeholder="Что понравилось или что улучшить — по желанию"></textarea>
+    </div>
+    <div class="feedback-gate-votes">
+      <button type="button" class="btn like" id="feedbackGateLikeBtn" onclick="submitFeedbackFromGate('like')">Нравится</button>
+      <button type="button" class="btn dislike" id="feedbackGateDislikeBtn" onclick="submitFeedbackFromGate('dislike')">Не нравится</button>
+    </div>
+    <div class="feedback-gate-status" id="feedbackGateStatus"></div>
+    <button type="button" class="feedback-gate-cancel" id="feedbackGateCancelBtn" onclick="cancelFeedbackGate()">Отмена — вернуться назад</button>
   </div>
+</div>
+<div class="feedback-toast hidden" id="feedbackToast" role="status" aria-label="Напоминание об оценке" style="display:none!important" aria-hidden="true">
+  <!-- legacy toast kept hidden; blocking gate modal is used instead -->
 </div>
 <main class="layout">
   <section class="card">
@@ -230,7 +359,7 @@ AGENT_STUDIO_HTML = r"""
     <div class="guide-strip" id="guideStrip">
       <div class="guide-step"><b>Шаг 1</b><br>Загрузите дневное фото фасада</div>
       <div class="guide-step"><b>Шаг 2</b><br>«Анализ → генерация»</div>
-      <div class="guide-step"><b>Шаг 3</b><br>Правьте результат кистью и чатом</div>
+      <div class="guide-step"><b>Шаг 3</b><br>Текст в чате · кисть/ластик для точности</div>
     </div>
     <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Вставить или загрузить фото фасада">
       <div class="hint">
@@ -253,7 +382,8 @@ AGENT_STUDIO_HTML = r"""
     <div class="warn-note" id="photoSoftWarn">Перед генерацией: уберите с фото чужие надписи/водяные знаки или загрузите чистое фото фасада — так результат будет чище.</div>
   </section>
 
-  <section class="card">
+  <section class="card work-col" id="resultCard">
+    <div class="col-kicker work">Рабочая зона · фото и разметка</div>
     <div class="card-head">
       <h2>2. Результат</h2>
       <span class="tip" id="tipResult">
@@ -263,7 +393,7 @@ AGENT_STUDIO_HTML = r"""
     </div>
     <div class="result-stage" id="resultStage">
       <img id="finalImg" alt="final">
-      <canvas id="editMarkupCanvas" class="hidden" aria-hidden="true"></canvas>
+      <canvas id="editMarkupCanvas" class="hidden" tabindex="0" aria-hidden="true"></canvas>
     </div>
     <div class="markup-bar" id="markupBarTour">
       <button type="button" class="btn secondary brush" id="editBrushBtn" onclick="toggleEditTool('brush')" title="Красная кисть: изменить или проставить свет">Кисть · правка</button>
@@ -275,13 +405,24 @@ AGENT_STUDIO_HTML = r"""
         <span class="tip-bubble right">Инструменты включаются повторным нажатием. Без текста в чате правка не отправится.</span>
       </span>
     </div>
+    <div class="principle-note" id="workPrinciple">
+      <b>Главное:</b> правки можно описать просто текстом в чате справа.
+      <b class="red">Кисть</b> и <b class="cyan">ластик</b> — для точности: отметить зону и аккуратно поменять только её.
+      Можно разметить сразу и красным, и голубым, затем нажать готовые кнопки в чате.
+    </div>
     <div class="legend">
-      1) Включите <b class="red">кисть</b> или <b class="cyan">ластик</b> и отметьте зону.
-      2) В чате <b>обязательно</b> напишите задачу: убрать / изменить / <b>проставь прожектор</b> / теплее…
-      3) Красная зона + «проставь прожектор» — добавит прибор только там. Голубая — уберёт отмеченное.
-      4) «Отправить». Без текста правка по разметке не уйдёт.
+      1) Включите <b class="red">кисть</b> и/или <b class="cyan">ластик</b>, отметьте зону на фото.
+      2) Сразу откроется окно: <b>что сделать с этим местом?</b> — шаблон или свой текст.
+      3) «Отправить правку» прямо из окна. Краска в финале не останется.
+      4) Без разметки по-прежнему можно править только текстом в чате.
     </div>
     <div class="status" id="markupHint" style="display:none;margin-top:4px">Что хотите изменить на отмеченных светильниках? Напишите в чат ниже.</div>
+    <div class="markup-next-step" id="markupNextStep" role="status">
+      <b>Зона отмечена.</b> Дальше смотрите <b>чат справа</b>: шаблоны или свой текст → «Отправить».
+      <div class="step-actions">
+        <button type="button" class="btn accent" onclick="revealChatStepPanel(true)">Открыть чат и шаблоны</button>
+      </div>
+    </div>
     <div class="row">
       <button class="btn secondary" onclick="downloadFinal()" id="downloadBtn" disabled title="Скачать текущий результат">Скачать</button>
       <button class="btn secondary" onclick="copyFinal()" id="copyFinalBtn" disabled title="Скопировать результат в буфер">Копировать</button>
@@ -302,39 +443,63 @@ AGENT_STUDIO_HTML = r"""
     <div class="hist" id="historyStrip"></div>
   </section>
 
-  <section class="card">
+  <section class="card chat-col" id="chatCard">
+    <div class="col-kicker chat-label">Чат · команды и готовые кнопки</div>
     <div class="card-head">
       <h2>3. Чат с агентом</h2>
       <span class="tip" id="tipChat">
         <button type="button" class="tip-btn" onclick="toggleTip('tipChat')" aria-label="Подсказка">?</button>
-        <span class="tip-bubble right">Быстрые кнопки только подставляют текст — «Отправить» нажимаете сами. С разметкой текст обязателен.</span>
+        <span class="tip-bubble right">Текст всегда работает сам. Кисть/ластик только уточняют где менять. Готовые кнопки можно нажимать по очереди — текст добавится в поле.</span>
       </span>
     </div>
-    <div class="chat" id="chatBox"></div>
+    <div class="chat-step-panel" id="chatStepPanel" role="status">
+      <div class="step-kicker" id="chatStepKicker">Шаг 2 из 2</div>
+      <h3 id="chatStepTitle">Зона отмечена — что сделать?</h3>
+      <ol id="chatStepList">
+        <li><b>Нажмите шаблон</b> ниже — текст сам попадёт в поле</li>
+        <li>или <b>напишите сами</b> в поле внизу</li>
+        <li>затем нажмите <b>«Отправить»</b></li>
+      </ol>
+      <div class="step-actions">
+        <button type="button" class="btn accent" onclick="scrollToQuickTemplates()">К шаблонам</button>
+        <button type="button" class="btn secondary" onclick="focusChatInstruction()">Написать свой текст</button>
+      </div>
+    </div>
+    <div class="principle-note" id="chatIdleNote">Без разметки достаточно написать задачу своими словами и нажать «Отправить». Кисть/ластик слева — если нужно указать точное место.</div>
     <div class="quick" id="quickPrompts">
       <div class="quick-group for-eraser" id="quickEraserGroup">
-        <div class="group-label">Голубой ластик — варианты:</div>
+        <div class="group-label">Шаблоны ластика (голубая зона) — нажмите одну кнопку:</div>
         <button type="button" class="btn secondary lit-eraser" data-tool="eraser" onclick="fillChatPrompt('убери ТОЛЬКО отмеченные голубым светильники и лучи, все остальные светильники оставь как есть')" title="Убрать отмеченные светильники">Убери отмеченное</button>
         <button type="button" class="btn secondary lit-eraser" data-tool="eraser" onclick="fillChatPrompt('убери отмеченные голубым прожекторы и их лучи, стену оставь как у соседних панелей без затемнения')" title="Убрать прожекторы в зоне">Убери прожекторы</button>
         <button type="button" class="btn secondary lit-eraser" data-tool="eraser" onclick="fillChatPrompt('ослабь или почти погаси только отмеченные голубым лучи, сами соседние светильники не трогай')" title="Ослабить свет в зоне">Ослабь лучи</button>
       </div>
       <div class="quick-group for-brush" id="quickBrushGroup">
-        <div class="group-label">Красная кисть — варианты:</div>
+        <div class="group-label">Шаблоны кисти (красная зона) — нажмите одну кнопку:</div>
         <button type="button" class="btn secondary lit-brush" data-tool="brush" onclick="fillChatPrompt('измени ТОЛЬКО отмеченные красным светильники, остальные не трогай')" title="Изменить отмеченное">Измени отмеченное</button>
         <button type="button" class="btn secondary lit-brush" data-tool="brush" onclick="fillChatPrompt('проставь прожектор только в красной отмеченной зоне, остальные светильники не трогай')" title="Проставить прожектор">Проставь прожектор</button>
         <button type="button" class="btn secondary lit-brush" data-tool="brush" onclick="fillChatPrompt('сделай отмеченные красным лучи теплее и мягче, остальные светильники не трогай')" title="Теплее в зоне">Теплее в зоне</button>
         <button type="button" class="btn secondary lit-brush" data-tool="brush" onclick="fillChatPrompt('усилить яркость только отмеченных красным светильников и лучей, остальное не трогай')" title="Ярче в зоне">Ярче в зоне</button>
       </div>
+      <div class="group-label" id="quickAnyLabel" style="width:100%;font-size:11px;color:var(--muted)">Общие команды (без разметки тоже можно):</div>
       <button type="button" class="btn secondary" data-tool="any" onclick="fillChatPrompt('теплее')" title="Подставить текст «теплее»">Теплее</button>
       <button type="button" class="btn secondary" data-tool="any" onclick="fillChatPrompt('усиль карниз')" title="Подставить текст про карниз">Усиль карниз</button>
     </div>
     <div class="chat-input" id="chatSendTour">
-      <textarea id="chatInput" placeholder="Что хотите изменить? Например: убери левый угловой светильник…"></textarea>
+      <div class="input-step-label" id="chatInputStepLabel">Сюда напишите, что сделать с отмеченным — или сначала нажмите шаблон выше</div>
+      <textarea id="chatInput" placeholder="Можно просто написать: убери левый / сделай теплее / проставь прожектор у входа…"></textarea>
       <button class="btn accent" id="chatBtn" onclick="sendChat()" disabled title="Отправить правку агенту">Отправить</button>
     </div>
+    <div class="chat" id="chatBox"></div>
+    <a class="max-support-card" id="maxSupportCard" href="{{MAX_GROUP_JOIN_URL}}" target="_blank" rel="noopener noreferrer">
+      <img src="{{MAX_GROUP_QR_URL}}" width="52" height="52" alt="QR MAX" loading="lazy">
+      <div>
+        <b>Поддержка</b>
+        <span>Сюда можно кидать скрины результата, писать вопросы и предложения — ответим в группе MAX.</span>
+      </div>
+    </a>
     <section class="feedback-zone" id="feedbackZone">
-      <h2 style="margin:0;font-size:15px" id="feedbackTitle">Оценка результата</h2>
-      <p class="muted" id="feedbackLead" style="margin:0">Нравится работа агента? Оценка пойдёт в обучение.</p>
+      <h2 style="margin:0;font-size:15px" id="feedbackTitle">Оценка этой генерации</h2>
+      <p class="muted" id="feedbackLead" style="margin:0">Подробный отзыв необязателен. Если нажмёте генерацию без оценки — поверх экрана откроется окно «Поставьте оценку».</p>
       <div class="feedback-votes" id="feedbackVotes">
         <button type="button" class="btn secondary like" id="feedbackLikeBtn" onclick="setFeedbackVote('like')">Нравится</button>
         <button type="button" class="btn secondary dislike" id="feedbackDislikeBtn" onclick="setFeedbackVote('dislike')">Не нравится</button>
@@ -369,67 +534,450 @@ let feedbackVote = '';
 let feedbackTimer = null;
 let feedbackPromptedHistoryId = '';
 let feedbackToastDismissedFor = '';
-const FEEDBACK_TOAST_DELAY_MS = 45000;
+let pendingAfterFeedback = null; // {type:'generate'|'chat'|'createProject'}
+let studioImageModel = '';
+const FEEDBACK_TOAST_DELAY_MS = 8000;
+let markupUsedBrush = false;
+let markupUsedEraser = false;
 let tourStep = 0;
 let tourActive = false;
 let tourResizeBound = false;
+let tourTimers = [];
+let tourSnapshot = null;
+let tourActionKey = '';
+let tourLayoutTimer = null;
+const TOUR_BEFORE = '/assets/studio_tour/before.png';
+const TOUR_AFTER = '/assets/studio_tour/after.png';
 const STUDIO_TOUR = [
   {
-    title: 'Загрузите фото фасада',
-    target: 'dropzone',
-    place: 'below',
-    html: '<p>Начните здесь.</p><ol><li>Вставьте фото <b>Ctrl+V</b></li><li>или нажмите <b>дважды</b> по этой зоне</li><li>или «Выбрать файл»</li></ol><p>Лучше дневной фронтальный снимок без надписей.</p>'
-  },
-  {
-    title: 'Запуск генерации',
-    target: 'startBtn',
-    place: 'below',
-    html: '<p>Когда фото загружено, нажмите <b>Анализ → генерация</b>.</p><ol><li>Один раз появится проверка качества фото</li><li>Дальше откроется окно «Идёт генерация»</li><li>Результат появится в центре экрана</li></ol>'
-  },
-  {
-    title: 'Готовый результат',
+    title: 'Что получите',
     target: 'resultStage',
     place: 'below',
-    html: '<p>Здесь показывается ночной рендер.</p><ol><li>Можно <b>Скачать</b> или <b>Копировать</b></li><li>Дальше правьте кистью / ластиком</li></ol>'
+    action: 'beforeAfter',
+    html: '<div class="tour-action-chip">▶ Смотрите превращение</div><div class="tour-morph"><img src="'+TOUR_BEFORE+'" alt="до"><img class="after" src="'+TOUR_AFTER+'" alt="после"><div class="labels"><span>До</span><span>После</span></div></div><p>Дневное фото → ночная концепция подсветки NITEOS. Дальше — сами действия на экране.</p>'
   },
   {
-    title: 'Кисть и ластик',
-    target: 'markupBarTour',
+    title: 'Действие: загрузка фото',
+    target: 'dropzone',
     place: 'below',
-    html: '<p>Инструменты правят только отмеченные зоны.</p><ol><li><b style="color:#ff6b6b">Красная кисть</b> — изменить или проставить свет</li><li><b style="color:#4fd1c5">Голубой ластик</b> — убрать светильник</li><li>Повторное нажатие выключает инструмент</li></ol>'
+    action: 'upload',
+    html: '<div class="tour-action-chip">▶ Вставляем фото в зону</div><p>Курсор показывает, как фото попадает в окно слева.</p><ol><li><b>Ctrl+V</b> / перетащить / дважды клик</li><li>Лучше дневной фронтальный снимок</li></ol>'
   },
   {
-    title: 'Цветные варианты в чате',
-    target: 'quickPrompts',
-    place: 'above',
-    html: '<p>Когда кисть или ластик включены, здесь загораются цветные кнопки.</p><ol><li>Голубые — для ластика</li><li>Красные — для кисти</li><li>Кнопка только подставляет текст, отправка вручную</li></ol>'
-  },
-  {
-    title: 'Напишите и отправьте',
-    target: 'chatSendTour',
-    place: 'above',
-    html: '<p>С разметкой текст <b>обязателен</b>.</p><ol><li>Выберите цветную кнопку или напишите сами</li><li>Нажмите <b>Отправить</b></li><li>Дождитесь окна правки</li></ol>'
-  },
-  {
-    title: 'История версий',
-    target: 'historyStrip',
-    place: 'above',
-    html: '<p>Каждая генерация/правка сохраняется здесь.</p><ol><li>Клик по миниатюре делает версию <b>активной</b></li><li>Дальнейшие правки идут именно к ней</li></ol>'
-  },
-  {
-    title: 'Новый проект',
-    target: 'newProjectTour',
+    title: 'Действие: генерация',
+    target: 'startBtn',
     place: 'below',
-    html: '<p>Чтобы начать с чистого листа — <b>Новый проект</b>.</p><ol><li>Экран очистится</li><li>Загрузите новое фото</li><li>Кнопка «Как это работает?» всегда открывает этот тур снова</li></ol>'
+    action: 'generate',
+    html: '<div class="tour-action-chip">▶ Жмём «Анализ → генерация»</div><p>Кнопка мигает, затем короткое демо окна ожидания — так выглядит реальный запуск.</p>'
+  },
+  {
+    title: 'Действие: результат',
+    target: 'resultCard',
+    place: 'below',
+    action: 'result',
+    html: '<div class="tour-action-chip">▶ Результат в центре</div><p>Ночной рендер появляется здесь. Можно <b>Скачать</b> файл или <b>Копировать</b> в буфер.</p>'
+  },
+  {
+    title: 'Действие: кисть и ластик',
+    target: 'resultCard',
+    place: 'below',
+    action: 'markup',
+    html: '<div class="tour-action-chip">▶ Рисуем зоны на фото</div><p>Смотрите на результат: сначала красная кисть, затем голубой ластик — как при живой правке.</p><ol><li><b style="color:#ff6b6b">Кисть</b> — изменить / добавить свет</li><li><b style="color:#4fd1c5">Ластик</b> — убрать / ослабить</li></ol>'
+  },
+  {
+    title: 'Действие: чат и кнопки',
+    target: 'chatCard',
+    place: 'above',
+    action: 'chat',
+    html: '<div class="tour-action-chip">▶ Пишем задачу в чат</div><p>Текст набирается сам, готовые кнопки подставляют команды. Можно править <b>только текстом</b> — кисть нужна для точности «где».</p>'
+  },
+  {
+    title: 'Действие: поддержка',
+    target: 'maxSupportCard',
+    place: 'above',
+    action: 'max',
+    html: '<div class="tour-action-chip">▶ Поддержка</div><p>Скрины, вопросы и предложения — в блок <b>Поддержка</b> (QR справа внизу и карточка в чате).</p>'
+  },
+  {
+    title: 'Готово',
+    target: 'helpBtnPromo',
+    place: 'below',
+    action: 'done',
+    html: '<div class="tour-action-chip">✓ Можно начинать</div><p>Тур всегда открывается кнопкой <b>«Как это работает?»</b>. Создайте проект и загрузите своё фото.</p>'
   }
 ];
+
+function tourDelay(fn, ms){
+  const id = setTimeout(fn, ms);
+  tourTimers.push(id);
+  return id;
+}
+function clearTourTimers(){
+  tourTimers.forEach(clearTimeout);
+  tourTimers = [];
+}
+function ensureTourCursor(){
+  let el = document.getElementById('tourGhostCursor');
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'tourGhostCursor';
+    el.className = 'tour-ghost-cursor';
+    document.body.appendChild(el);
+  }
+  return el;
+}
+function moveTourCursorTo(el, on){
+  const cur = ensureTourCursor();
+  if(!el){ cur.classList.remove('on'); return; }
+  const r = el.getBoundingClientRect();
+  cur.style.left = (r.left + r.width * 0.55) + 'px';
+  cur.style.top = (r.top + r.height * 0.55) + 'px';
+  cur.classList.toggle('on', !!on);
+}
+function snapshotTourUi(){
+  const sourceImg = document.getElementById('sourceImg');
+  const finalImg = document.getElementById('finalImg');
+  const dropzone = document.getElementById('dropzone');
+  const chatInput = document.getElementById('chatInput');
+  const canvas = document.getElementById('editMarkupCanvas');
+  let markupData = '';
+  try{
+    if(canvas && canvas.width && canvas.height) markupData = canvas.toDataURL('image/png');
+  }catch(_){}
+  return {
+    sourceSrc: sourceImg ? sourceImg.getAttribute('src') : '',
+    finalSrc: finalImg ? finalImg.getAttribute('src') : '',
+    dropHas: dropzone ? dropzone.classList.contains('has-image') : false,
+    chatVal: chatInput ? chatInput.value : '',
+    editTool,
+    markupUsedBrush,
+    markupUsedEraser,
+    markupData,
+  };
+}
+function restoreTourUi(){
+  if(!tourSnapshot) return;
+  const sourceImg = document.getElementById('sourceImg');
+  const finalImg = document.getElementById('finalImg');
+  const dropzone = document.getElementById('dropzone');
+  const chatInput = document.getElementById('chatInput');
+  if(sourceImg){
+    if(tourSnapshot.sourceSrc) sourceImg.src = tourSnapshot.sourceSrc;
+    else { sourceImg.removeAttribute('src'); sourceImg.src = ''; }
+  }
+  if(dropzone) dropzone.classList.toggle('has-image', !!tourSnapshot.dropHas && !!tourSnapshot.sourceSrc);
+  if(finalImg){
+    if(tourSnapshot.finalSrc) finalImg.src = tourSnapshot.finalSrc;
+    else if(!(lastState && lastState.has_final)){
+      finalImg.removeAttribute('src'); finalImg.src = '';
+    }
+  }
+  if(chatInput) chatInput.value = tourSnapshot.chatVal || '';
+  const canvas = document.getElementById('editMarkupCanvas');
+  if(canvas){
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if(tourSnapshot.markupData){
+      const img = new Image();
+      img.onload = () => {
+        try{ ctx.drawImage(img, 0, 0, canvas.width, canvas.height); }catch(_){}
+      };
+      img.src = tourSnapshot.markupData;
+    }
+  }
+  editTool = tourSnapshot.editTool || null;
+  markupUsedBrush = !!tourSnapshot.markupUsedBrush;
+  markupUsedEraser = !!tourSnapshot.markupUsedEraser;
+  updateEditToolUi();
+  document.getElementById('busyOverlay')?.classList.remove('open', 'tour-demo');
+  document.querySelectorAll('.tour-demo-flash,.tour-click-flash,.tour-playing').forEach(el => {
+    el.classList.remove('tour-demo-flash', 'tour-click-flash', 'tour-playing');
+  });
+  const stage = document.getElementById('resultStage');
+  if(stage && !(editTool && lastState.has_final)) stage.classList.remove('is-editing');
+  setMarkupEnabled(!!lastState.has_final && !busy);
+  moveTourCursorTo(null, false);
+}
+function clearTourAction(){
+  clearTourTimers();
+  closeTourBusyDemo();
+  document.getElementById('busyOverlay')?.classList.remove('open', 'tour-demo');
+  document.querySelectorAll('.tour-demo-flash,.tour-click-flash,.tour-playing').forEach(el => {
+    el.classList.remove('tour-demo-flash', 'tour-click-flash', 'tour-playing');
+  });
+  // Reset demo tool state between tour steps; full restore happens on close.
+  if(tourActive && tourSnapshot){
+    editTool = tourSnapshot.editTool || null;
+    markupUsedBrush = !!tourSnapshot.markupUsedBrush;
+    markupUsedEraser = !!tourSnapshot.markupUsedEraser;
+    updateEditToolUi();
+  }
+  const brushGroup = document.getElementById('quickBrushGroup');
+  const eraserGroup = document.getElementById('quickEraserGroup');
+  if(!editTool && !markupUsedBrush && !markupUsedEraser){
+    if(brushGroup) brushGroup.classList.remove('open');
+    if(eraserGroup) eraserGroup.classList.remove('open');
+  }
+  moveTourCursorTo(null, false);
+}
+function drawTourStroke(ctx, points, color, width){
+  if(!ctx || !points.length) return;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.lineWidth = width || 14;
+  ctx.strokeStyle = color;
+  ctx.fillStyle = color;
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, points[0].y);
+  for(let i=1;i<points.length;i++) ctx.lineTo(points[i].x, points[i].y);
+  ctx.stroke();
+}
+function animateTourStroke(ctx, points, color, width, done){
+  if(!ctx || !points.length){ if(done) done(); return; }
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.lineWidth = width || 14;
+  ctx.strokeStyle = color;
+  ctx.fillStyle = color;
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.beginPath();
+  ctx.arc(points[0].x, points[0].y, (width || 14) / 2, 0, Math.PI * 2);
+  ctx.fill();
+  let i = 1;
+  const step = () => {
+    if(!tourActive) return;
+    if(i >= points.length){ if(done) done(); return; }
+    ctx.beginPath();
+    ctx.moveTo(points[i - 1].x, points[i - 1].y);
+    ctx.lineTo(points[i].x, points[i].y);
+    ctx.stroke();
+    i += 1;
+    if(i < points.length) tourDelay(step, 45);
+    else if(done) done();
+  };
+  if(points.length > 1) tourDelay(step, 45);
+  else if(done) done();
+}
+function ensureTourFinalImage(done){
+  const finalImg = document.getElementById('finalImg');
+  if(!finalImg){ if(done) done(); return; }
+  const src = finalImg.getAttribute('src') || '';
+  if(src.includes('/assets/studio_tour/after.png') && finalImg.complete && finalImg.naturalWidth > 0){
+    if(done) done();
+    return;
+  }
+  let started = false;
+  const finish = () => {
+    if(started) return;
+    started = true;
+    if(done) done();
+  };
+  // Same broken src may not re-fire load/error — force a one-shot retry URL.
+  const needsRetry = src.includes('/assets/studio_tour/after.png') && !(finalImg.naturalWidth > 0);
+  finalImg.addEventListener('load', finish, {once:true});
+  finalImg.addEventListener('error', finish, {once:true});
+  finalImg.src = needsRetry ? (TOUR_AFTER + '?retry=' + Date.now()) : TOUR_AFTER;
+  if(finalImg.complete && finalImg.naturalWidth > 0) tourDelay(finish, 20);
+  tourDelay(finish, 1200); // never hang tour demos
+}
+function preloadTourAssets(){
+  [TOUR_BEFORE, TOUR_AFTER].forEach(src => {
+    const img = new Image();
+    img.src = src;
+  });
+}
+function openTourBusyDemo(){
+  const overlay = document.getElementById('busyOverlay');
+  const busyText = document.getElementById('busyText');
+  const busyTitle = document.getElementById('busyTitle');
+  if(busyTitle) busyTitle.textContent = 'Идёт генерация';
+  if(busyText) busyText.textContent = 'Демо: агент собирает ночную концепцию…';
+  overlay?.classList.add('open', 'tour-demo');
+}
+function closeTourBusyDemo(){
+  const overlay = document.getElementById('busyOverlay');
+  overlay?.classList.remove('open', 'tour-demo');
+}
+function buildStrokePath(w, h, kind){
+  if(kind === 'brush'){
+    const y = h * 0.30;
+    return [
+      {x:w*0.16,y:y},{x:w*0.22,y:y-2},{x:w*0.28,y:y},{x:w*0.34,y:y+2},
+      {x:w*0.40,y:y},{x:w*0.46,y:y-1},{x:w*0.52,y:y}
+    ];
+  }
+  const y = h * 0.55;
+  return [
+    {x:w*0.55,y:y},{x:w*0.62,y:y-1},{x:w*0.69,y:y},{x:w*0.76,y:y+1},{x:w*0.84,y:y}
+  ];
+}
+function playMarkupDemo(attempt){
+  if(!tourActive) return;
+  const stage = document.getElementById('resultStage');
+  const brushBtn = document.getElementById('editBrushBtn');
+  const eraserBtn = document.getElementById('editEraserBtn');
+  setMarkupEnabled(true);
+  syncEditMarkupCanvas();
+  const canvas = document.getElementById('editMarkupCanvas');
+  if(!canvas) return;
+  const w = Math.max(1, canvas.width);
+  const h = Math.max(1, canvas.height);
+  if(w < 8 || h < 8){
+    if((attempt || 0) < 8){
+      tourDelay(() => playMarkupDemo((attempt || 0) + 1), 120);
+    }
+    return;
+  }
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  editTool = 'brush';
+  updateEditToolUi();
+  const brushPath = buildStrokePath(w, h, 'brush');
+  animateTourStroke(ctx, brushPath, 'rgba(255,70,70,0.92)', Math.max(10, w * 0.02), () => {
+    if(!tourActive) return;
+    markupUsedBrush = true;
+    moveTourCursorTo(eraserBtn, true);
+    eraserBtn?.classList.add('tour-click-flash');
+    tourDelay(() => {
+      if(!tourActive) return;
+      editTool = 'eraser';
+      updateEditToolUi();
+      const eraserPath = buildStrokePath(w, h, 'eraser');
+      animateTourStroke(ctx, eraserPath, 'rgba(79,209,197,0.92)', Math.max(10, w * 0.018), () => {
+        if(!tourActive) return;
+        markupUsedEraser = true;
+        updateEditToolUi();
+        moveTourCursorTo(stage, true);
+      });
+    }, 350);
+  });
+}
+function runTourAction(action){
+  clearTourAction();
+  if(!action) return;
+  // Prevent accidental real clicks under the spotlight while demos play.
+  document.getElementById('startBtn')?.setAttribute('disabled', 'disabled');
+  document.getElementById('chatBtn')?.setAttribute('disabled', 'disabled');
+  const dropzone = document.getElementById('dropzone');
+  const sourceImg = document.getElementById('sourceImg');
+  const finalImg = document.getElementById('finalImg');
+  const stage = document.getElementById('resultStage');
+  const startBtn = document.getElementById('startBtn');
+  const brushBtn = document.getElementById('editBrushBtn');
+  const eraserBtn = document.getElementById('editEraserBtn');
+  const chatInput = document.getElementById('chatInput');
+  const chatBtn = document.getElementById('chatBtn');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const copyBtn = document.getElementById('copyFinalBtn');
+  const maxCard = document.getElementById('maxSupportCard');
+
+  if(action === 'beforeAfter'){
+    ensureTourFinalImage(() => {
+      if(!tourActive) return;
+      if(stage) stage.classList.add('tour-playing');
+    });
+  }
+  if(action === 'upload'){
+    if(dropzone) dropzone.classList.add('tour-demo-flash');
+    moveTourCursorTo(dropzone, true);
+    tourDelay(() => {
+      if(!tourActive) return;
+      if(sourceImg){ sourceImg.src = TOUR_BEFORE; }
+      if(dropzone) dropzone.classList.add('has-image');
+      moveTourCursorTo(dropzone, true);
+    }, 500);
+  }
+  if(action === 'generate'){
+    if(sourceImg && !(sourceImg.getAttribute('src'))){
+      sourceImg.src = TOUR_BEFORE;
+      dropzone?.classList.add('has-image');
+    }
+    moveTourCursorTo(startBtn, true);
+    startBtn?.classList.add('tour-click-flash');
+    tourDelay(() => {
+      if(!tourActive) return;
+      openTourBusyDemo();
+    }, 450);
+    tourDelay(() => {
+      if(!tourActive) return;
+      closeTourBusyDemo();
+      ensureTourFinalImage(() => {
+        if(!tourActive) return;
+        stage?.classList.add('tour-playing');
+        moveTourCursorTo(stage, true);
+      });
+    }, 1400);
+  }
+  if(action === 'result'){
+    ensureTourFinalImage(() => {
+      if(!tourActive) return;
+      stage?.classList.add('tour-playing');
+      moveTourCursorTo(downloadBtn, true);
+      downloadBtn?.classList.add('tour-click-flash');
+      tourDelay(() => {
+        if(!tourActive) return;
+        moveTourCursorTo(copyBtn, true);
+        copyBtn?.classList.add('tour-click-flash');
+      }, 900);
+    });
+  }
+  if(action === 'markup'){
+    stage?.classList.add('tour-playing');
+    moveTourCursorTo(brushBtn, true);
+    brushBtn?.classList.add('tour-click-flash');
+    ensureTourFinalImage(() => {
+      if(!tourActive) return;
+      playMarkupDemo(0);
+    });
+  }
+  if(action === 'chat'){
+    const brushGroup = document.getElementById('quickBrushGroup');
+    const eraserGroup = document.getElementById('quickEraserGroup');
+    if(brushGroup) brushGroup.classList.add('open');
+    if(eraserGroup) eraserGroup.classList.add('open');
+    moveTourCursorTo(brushGroup || chatInput, true);
+    const demoText = 'проставь прожектор в красной зоне и убери отмеченное голубым';
+    if(chatInput){
+      chatInput.value = '';
+      let i = 0;
+      const typeNext = () => {
+        if(!tourActive || i > demoText.length) return;
+        chatInput.value = demoText.slice(0, i);
+        i += 1;
+        tourDelay(typeNext, 28);
+      };
+      tourDelay(typeNext, 400);
+    }
+    tourDelay(() => {
+      if(!tourActive) return;
+      moveTourCursorTo(chatBtn, true);
+      chatBtn?.classList.add('tour-click-flash');
+    }, 2200);
+  }
+  if(action === 'max'){
+    moveTourCursorTo(maxCard, true);
+    maxCard?.classList.add('tour-click-flash');
+  }
+  if(action === 'done'){
+    const help = document.getElementById('helpBtnPromo');
+    moveTourCursorTo(help, true);
+    help?.classList.add('tour-click-flash');
+  }
+}
 
 function qs(){ return new URLSearchParams(location.search); }
 function esc(s){ return String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 async function api(path, opts={}){
   const res = await fetch(path, opts);
   const data = await res.json().catch(()=>({}));
-  if(!res.ok) throw new Error(data.detail || res.statusText || 'Ошибка');
+  if(!res.ok){
+    let detail = data.detail || res.statusText || 'Ошибка';
+    if(Array.isArray(detail)) detail = detail.map(x => x.msg || String(x)).join(', ');
+    const err = new Error(detail);
+    err.status = res.status;
+    throw err;
+  }
   return data;
 }
 function setBusy(on, msg){
@@ -448,15 +996,42 @@ function setBusy(on, msg){
   const busyText = document.getElementById('busyText');
   const busyTitle = document.getElementById('busyTitle');
   if(overlay){
+    if(busy) overlay.classList.remove('tour-demo');
     overlay.classList.toggle('open', busy);
     overlay.setAttribute('aria-busy', busy ? 'true' : 'false');
   }
   if(busy && busyText && msg) busyText.textContent = msg;
   if(busyTitle){
     busyTitle.textContent = busy
-      ? ((msg && /правк|разметк|редактир/i.test(msg)) ? 'Идёт правка' : 'Идёт генерация')
+      ? ((msg && /загружаю картинк|загружаю результат/i.test(msg))
+          ? 'Почти готово'
+          : ((msg && /правк|разметк|редактир/i.test(msg)) ? 'Идёт правка' : 'Идёт генерация'))
       : 'Идёт генерация';
   }
+}
+function loadFinalImageAndWait(img, url, timeoutMs){
+  return new Promise((resolve) => {
+    if(!img || !url){ resolve(false); return; }
+    let done = false;
+    const finish = (ok) => {
+      if(done) return;
+      done = true;
+      try{ img.removeEventListener('load', onLoad); }catch(_){}
+      try{ img.removeEventListener('error', onErr); }catch(_){}
+      if(timer) clearTimeout(timer);
+      resolve(!!ok);
+    };
+    const onLoad = () => finish(img.naturalWidth > 0);
+    const onErr = () => finish(false);
+    const timer = setTimeout(() => finish(img.complete && img.naturalWidth > 0), timeoutMs || 60000);
+    img.addEventListener('load', onLoad);
+    img.addEventListener('error', onErr);
+    img.src = url;
+    // Cached images may already be complete right after assigning src.
+    if(img.complete && img.naturalWidth > 0){
+      requestAnimationFrame(() => finish(true));
+    }
+  });
 }
 function setError(msg){
   const box = document.getElementById('statusBox');
@@ -477,10 +1052,12 @@ function renderChat(chat){
     || '<div class="muted">История чата появится после первой генерации</div>';
   box.scrollTop = box.scrollHeight;
 }
-function applyStudioPayload(data){
+async function applyStudioPayload(data){
   lastState = data || {};
   const st = data.state || {};
   renderChat(data.chat || []);
+  // If a generation/edit is in flight, keep the overlay until the new photo is actually painted.
+  const holdBusyForFinal = !!busy && !!data.final_url;
 
   const dropzone = document.getElementById('dropzone');
   const sourceImg = document.getElementById('sourceImg');
@@ -494,9 +1071,21 @@ function applyStudioPayload(data){
   }
 
   const finalImg = document.getElementById('finalImg');
+  let finalReadyPromise = null;
   if(data.final_url){
-    finalImg.onload = () => { syncEditMarkupCanvas(); setMarkupEnabled(true); };
-    finalImg.src = data.final_url + '?t=' + Date.now();
+    const nextSrc = data.final_url + '?t=' + Date.now();
+    if(holdBusyForFinal){
+      setBusy(true, 'Почти готово — загружаю картинку результата…');
+      finalImg.onload = null;
+      finalImg.onerror = null;
+      finalReadyPromise = loadFinalImageAndWait(finalImg, nextSrc, 60000).then((ok) => {
+        syncEditMarkupCanvas();
+        return ok;
+      });
+    } else {
+      finalImg.onload = () => { syncEditMarkupCanvas(); setMarkupEnabled(true); };
+      finalImg.src = nextSrc;
+    }
   } else {
     finalImg.onload = null;
     finalImg.removeAttribute('src');
@@ -507,15 +1096,39 @@ function applyStudioPayload(data){
 
   const hist = document.getElementById('historyStrip');
   const activeId = data.active_history_id;
+  const histStamp = Date.now();
   hist.innerHTML = (data.history || []).map(h => {
     const label = esc(h.kind || 'render') + (h.id != null ? (' #' + h.id) : '');
-    const title = esc((h.note || h.prompt || '').slice(0, 120));
+    const title = esc((h.note || h.prompt || h.feedback_comment || '').slice(0, 120));
     const active = h.active || String(h.id) === String(activeId);
-    return `<button type="button" class="hist-item${active ? ' active' : ''}" title="${title}" onclick="restoreHistoryVersion('${esc(String(h.id))}')">
-      <img src="${esc(h.url)}?t=${Date.now()}" alt="">
+    const vote = (h.feedback_vote || '').toLowerCase();
+    let voteCls = 'pending';
+    let voteText = '⏳ Нет оценки';
+    if(vote === 'like'){ voteCls = 'like'; voteText = '👍 Нравится'; }
+    else if(vote === 'dislike'){ voteCls = 'dislike'; voteText = '👎 Не нравится'; }
+    else if((h.feedback_status || '').toLowerCase() === 'skipped'){ voteText = 'Пропущено'; }
+    const comment = (h.feedback_comment || '').trim();
+    const shortComment = comment ? (comment.length > 42 ? comment.slice(0, 42) + '…' : comment) : '';
+    const annUrl = (h.annotation_url || '').trim();
+    const hasAnn = !!annUrl;
+    const url = String(h.url || '').trim();
+    if(!url) return '';
+    return `<button type="button" class="hist-item${active ? ' active' : ''}" title="${title}" data-hist-id="${esc(String(h.id))}" data-hist-url="${esc(url)}">
+      <div class="hist-thumb">
+        <img src="${esc(url)}?t=${histStamp}" alt="" loading="lazy" onerror="this.style.opacity='.35'">
+        ${hasAnn ? `<img class="hist-ann" src="${esc(annUrl)}?t=${histStamp}" alt="разметка">` : ''}
+      </div>
       <span>${label}${active ? ' · active' : ''}</span>
+      ${hasAnn ? '<span class="hist-markup-tag">разметка · кисть/ластик</span>' : ''}
+      <span class="hist-vote ${voteCls}">${esc(voteText)}</span>
+      ${shortComment ? `<span class="hist-comment">${esc(shortComment)}</span>` : ''}
     </button>`;
   }).join('') || '<div class="muted">История версий появится после генерации</div>';
+  hist.querySelectorAll('.hist-item[data-hist-id]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      restoreHistoryVersion(btn.getAttribute('data-hist-id'), btn.getAttribute('data-hist-url') || '');
+    });
+  });
   const hint = document.getElementById('activeHistoryHint');
   if(hint){
     hint.textContent = activeId != null
@@ -530,8 +1143,22 @@ function applyStudioPayload(data){
   if(regenBtnApply) regenBtnApply.disabled = !projectId || busy;
   setMarkupEnabled(!!data.has_final && !busy);
   updateEditToolUi();
-  if(data.has_final) setBusy(false, 'Готово. Включите кисть/ластик, разметьте светильники и отправьте.');
   scheduleFeedbackPrompt(data);
+  if(data.has_final){
+    if(finalReadyPromise){
+      try{ await finalReadyPromise; }catch(_){}
+    }
+    const usedModel = data.routerai_model || (data.state && data.state.routerai_model) || '';
+    setBusy(false, usedModel
+      ? ('Готово · модель: ' + usedModel + '. Смотрите результат в центре.')
+      : 'Готово. Смотрите результат в центре — кисть/ластик для правок.');
+    // Keep the result in view — never jump to the feedback block after generation.
+    try{
+      requestAnimationFrame(() => {
+        document.getElementById('resultCard')?.scrollIntoView({behavior:'smooth', block:'center'});
+      });
+    }catch(_){}
+  }
 }
 function clearTourTarget(){
   document.querySelectorAll('.tour-target-live').forEach(el => el.classList.remove('tour-target-live', 'tour-pulse'));
@@ -559,21 +1186,10 @@ function positionCoachCard(targetRect, place){
   card.style.top = Math.round(top) + 'px';
   card.style.left = Math.round(left) + 'px';
 }
-function renderStudioTour(){
-  const step = STUDIO_TOUR[tourStep] || STUDIO_TOUR[0];
-  const root = document.getElementById('coachRoot');
+function positionTourChrome(target, step){
   const hole = document.getElementById('coachHole');
   const shade = document.getElementById('coachShade');
-  clearTourTarget();
-  document.getElementById('coachStepN').textContent = 'Шаг ' + (tourStep + 1) + ' из ' + STUDIO_TOUR.length;
-  document.getElementById('coachTitle').textContent = step.title;
-  document.getElementById('coachBody').innerHTML = step.html;
-  document.getElementById('coachPrevBtn').style.visibility = tourStep > 0 ? 'visible' : 'hidden';
-  document.getElementById('coachNextBtn').textContent = tourStep >= STUDIO_TOUR.length - 1 ? 'Понятно ✓' : 'Далее →';
-
-  const target = document.getElementById(step.target);
   if(!target){
-    // Fallback: center card, full shade
     if(shade) shade.style.display = 'block';
     if(hole) hole.style.display = 'none';
     const card = document.getElementById('coachCard');
@@ -584,77 +1200,248 @@ function renderStudioTour(){
     }
     return;
   }
-  target.classList.add('tour-target-live', 'tour-pulse');
-  try{ target.scrollIntoView({behavior:'smooth', block:'center', inline:'nearest'}); }catch(_){}
-  // Allow layout settle after scroll
-  setTimeout(() => {
+  const rect = target.getBoundingClientRect();
+  const pad = 8;
+  if(shade) shade.style.display = 'none';
+  if(hole){
+    hole.style.display = 'block';
+    hole.style.top = Math.max(0, rect.top - pad) + 'px';
+    hole.style.left = Math.max(0, rect.left - pad) + 'px';
+    hole.style.width = Math.max(24, rect.width + pad * 2) + 'px';
+    hole.style.height = Math.max(24, rect.height + pad * 2) + 'px';
+  }
+  const card = document.getElementById('coachCard');
+  if(card) card.style.transform = '';
+  positionCoachCard({
+    top: rect.top - pad,
+    left: rect.left - pad,
+    width: rect.width + pad * 2,
+    height: rect.height + pad * 2,
+    bottom: rect.bottom + pad,
+    right: rect.right + pad
+  }, step.place);
+}
+function renderStudioTour(opts){
+  const onlyLayout = !!(opts && opts.onlyLayout);
+  const step = STUDIO_TOUR[tourStep] || STUDIO_TOUR[0];
+  if(!onlyLayout){
+    clearTourTarget();
+    document.getElementById('coachStepN').textContent = 'Шаг ' + (tourStep + 1) + ' из ' + STUDIO_TOUR.length;
+    document.getElementById('coachTitle').textContent = step.title;
+    document.getElementById('coachBody').innerHTML = step.html;
+    document.getElementById('coachPrevBtn').style.visibility = tourStep > 0 ? 'visible' : 'hidden';
+    document.getElementById('coachNextBtn').textContent = tourStep >= STUDIO_TOUR.length - 1 ? 'Понятно ✓' : 'Далее →';
+  }
+
+  const target = document.getElementById(step.target);
+  if(!target){
+    positionTourChrome(null, step);
+    return;
+  }
+  if(!onlyLayout){
+    target.classList.add('tour-target-live', 'tour-pulse');
+    try{ target.scrollIntoView({behavior:'smooth', block:'nearest', inline:'nearest'}); }catch(_){}
+  } else if(!target.classList.contains('tour-target-live')){
+    target.classList.add('tour-target-live', 'tour-pulse');
+  }
+  clearTimeout(tourLayoutTimer);
+  tourLayoutTimer = setTimeout(() => {
     if(!tourActive) return;
-    const rect = target.getBoundingClientRect();
-    const pad = 8;
-    if(shade) shade.style.display = 'none'; // hole shadow paints the dimming
-    if(hole){
-      hole.style.display = 'block';
-      hole.style.top = Math.max(0, rect.top - pad) + 'px';
-      hole.style.left = Math.max(0, rect.left - pad) + 'px';
-      hole.style.width = Math.max(24, rect.width + pad * 2) + 'px';
-      hole.style.height = Math.max(24, rect.height + pad * 2) + 'px';
+    positionTourChrome(target, step);
+    if(!onlyLayout){
+      const key = tourStep + ':' + (step.action || '');
+      if(tourActionKey !== key){
+        tourActionKey = key;
+        runTourAction(step.action);
+      }
     }
-    const card = document.getElementById('coachCard');
-    if(card) card.style.transform = '';
-    positionCoachCard({
-      top: rect.top - pad,
-      left: rect.left - pad,
-      width: rect.width + pad * 2,
-      height: rect.height + pad * 2,
-      bottom: rect.bottom + pad,
-      right: rect.right + pad
-    }, step.place);
-  }, 180);
+  }, onlyLayout ? 40 : 160);
 }
 function openStudioTour(){
   tourStep = 0;
   tourActive = true;
+  tourActionKey = '';
+  tourSnapshot = snapshotTourUi();
+  preloadTourAssets();
   document.getElementById('coachRoot').classList.add('open');
   document.getElementById('studioTour').classList.remove('open');
   renderStudioTour();
   if(!tourResizeBound){
     tourResizeBound = true;
-    window.addEventListener('resize', () => { if(tourActive) renderStudioTour(); });
-    window.addEventListener('scroll', () => { if(tourActive) renderStudioTour(); }, true);
+    window.addEventListener('resize', () => {
+      if(!tourActive) return;
+      clearTimeout(tourLayoutTimer);
+      tourLayoutTimer = setTimeout(() => renderStudioTour({onlyLayout:true}), 60);
+    });
+    window.addEventListener('scroll', () => {
+      if(!tourActive) return;
+      clearTimeout(tourLayoutTimer);
+      tourLayoutTimer = setTimeout(() => renderStudioTour({onlyLayout:true}), 60);
+    }, true);
   }
 }
 function closeStudioTour(){
   tourActive = false;
+  tourActionKey = '';
+  clearTimeout(tourLayoutTimer);
+  clearTourAction();
+  restoreTourUi();
+  tourSnapshot = null;
   document.getElementById('coachRoot').classList.remove('open');
   document.getElementById('studioTour').classList.remove('open');
   clearTourTarget();
+  // Re-enable controls according to real project state
+  document.getElementById('startBtn').disabled = busy || !projectId;
+  document.getElementById('chatBtn').disabled = busy || !projectId;
   try{ localStorage.setItem('niteos_studio_tour_seen', '1'); }catch(_){}
 }
 function prevStudioTour(){
-  if(tourStep > 0){ tourStep--; renderStudioTour(); }
+  if(tourStep > 0){
+    clearTourAction();
+    tourActionKey = '';
+    tourStep--;
+    renderStudioTour();
+  }
 }
 function nextStudioTour(){
   if(tourStep >= STUDIO_TOUR.length - 1){ closeStudioTour(); return; }
+  clearTourAction();
+  tourActionKey = '';
   tourStep++;
   renderStudioTour();
 }
+function copyContactPhone(ev){
+  if(ev){ try{ ev.preventDefault(); }catch(_){ } }
+  const el = document.getElementById('contactPhoneLink');
+  const phone = (el && (el.getAttribute('data-phone') || el.textContent) || '8 843 202 21 39').trim();
+  const hint = document.getElementById('phoneCopyHint');
+  const done = () => {
+    if(hint){
+      hint.style.display = 'inline';
+      setTimeout(() => { hint.style.display = 'none'; }, 1600);
+    }
+    const box = document.getElementById('statusBox');
+    if(box){
+      box.classList.remove('busy', 'err');
+      box.textContent = 'Номер скопирован: ' + phone;
+    }
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(phone).then(done).catch(() => {
+      try{
+        const ta = document.createElement('textarea');
+        ta.value = phone; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); ta.remove(); done();
+      }catch(_){}
+    });
+  } else {
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = phone; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); ta.remove(); done();
+    }catch(_){}
+  }
+  return false;
+}
 function setFeedbackVote(vote){
   feedbackVote = (vote === 'like' || vote === 'dislike') ? vote : '';
-  document.getElementById('feedbackLikeBtn').classList.toggle('active', feedbackVote === 'like');
-  document.getElementById('feedbackDislikeBtn').classList.toggle('active', feedbackVote === 'dislike');
+  document.getElementById('feedbackLikeBtn')?.classList.toggle('active', feedbackVote === 'like');
+  document.getElementById('feedbackDislikeBtn')?.classList.toggle('active', feedbackVote === 'dislike');
 }
-function openFeedbackZone(){
+function openFeedbackGate(opts){
+  const gate = document.getElementById('feedbackGate');
+  if(!gate) return;
+  const pendingNote = document.getElementById('feedbackGatePending');
+  const statusEl = document.getElementById('feedbackGateStatus');
+  const lead = document.getElementById('feedbackGateLead');
+  const hasPending = !!(pendingAfterFeedback && pendingAfterFeedback.type);
+  if(pendingNote){
+    pendingNote.classList.toggle('hidden', !hasPending);
+    const labels = {generate:'генерацию', chat:'правку', createProject:'создание нового проекта'};
+    const what = labels[pendingAfterFeedback?.type] || 'действие';
+    pendingNote.textContent = hasPending
+      ? ('После оценки сразу продолжим: ' + what + '.')
+      : '';
+  }
+  if(lead){
+    lead.textContent = (opts && opts.message)
+      ? String(opts.message)
+      : 'Без оценки нельзя продолжить: ни генерацию, ни правку, ни новый проект.';
+  }
+  if(statusEl){
+    statusEl.classList.remove('err');
+    statusEl.textContent = '';
+  }
+  gate.classList.add('open');
+  try{ document.getElementById('feedbackGateLikeBtn')?.focus({preventScroll:true}); }catch(_){}
+}
+function closeFeedbackGate(){
+  const gate = document.getElementById('feedbackGate');
+  if(gate) gate.classList.remove('open');
+  const statusEl = document.getElementById('feedbackGateStatus');
+  if(statusEl){
+    statusEl.classList.remove('err');
+    statusEl.textContent = '';
+  }
+  setFeedbackGateBusy(false);
+}
+function cancelFeedbackGate(){
+  // Close modal only — pending action is dropped so user stays where they were.
+  pendingAfterFeedback = null;
+  closeFeedbackGate();
+  const box = document.getElementById('statusBox');
+  if(box){
+    box.classList.remove('busy');
+    box.classList.add('err');
+    box.textContent = 'Нужна оценка результата. Нажмите действие снова — снова откроется окно оценки.';
+  }
+}
+function setFeedbackGateBusy(on){
+  const like = document.getElementById('feedbackGateLikeBtn');
+  const dislike = document.getElementById('feedbackGateDislikeBtn');
+  const cancel = document.getElementById('feedbackGateCancelBtn');
+  if(like) like.disabled = !!on;
+  if(dislike) dislike.disabled = !!on;
+  if(cancel) cancel.disabled = !!on;
+}
+function openFeedbackZone(opts){
   const zone = document.getElementById('feedbackZone');
+  if(!zone) return;
   zone.classList.add('open');
-  zone.scrollIntoView({behavior:'smooth', block:'nearest'});
+  const force = !!(opts && opts.forceFocus);
+  if(force){
+    // Required path always uses the blocking center modal — not a page scroll.
+    openFeedbackGate({message: opts && opts.message});
+    return;
+  }
 }
 function hideFeedbackToast(){
-  document.getElementById('feedbackToast').classList.add('hidden');
+  const toast = document.getElementById('feedbackToast');
+  if(toast) toast.classList.add('hidden');
+}
+function promptFeedbackRequired(message, pending){
+  if(pending) pendingAfterFeedback = pending;
+  setError(message || 'Сначала оцените предыдущий результат.');
+  openFeedbackGate({
+    message: 'Поставьте оценку предыдущему результату — без этого дальше нельзя.'
+  });
+  const statusEl = document.getElementById('feedbackStatus');
+  if(statusEl){
+    statusEl.textContent = pending
+      ? 'Поставьте оценку в окне — после этого продолжим автоматически.'
+      : 'Оцените результат в окне, затем повторите действие.';
+  }
+  const gateStatus = document.getElementById('feedbackGateStatus');
+  if(gateStatus){
+    gateStatus.classList.remove('err');
+    gateStatus.textContent = pending
+      ? 'Выберите «Нравится» или «Не нравится» — и сразу продолжим.'
+      : 'Выберите «Нравится» или «Не нравится».';
+  }
 }
 function showFeedbackToast(){
-  const toast = document.getElementById('feedbackToast');
-  if(feedbackToastDismissedFor && feedbackToastDismissedFor === feedbackPromptedHistoryId) return;
-  toast.classList.remove('hidden');
+  // Soft toast disabled — users need a blocking modal, not a corner hint.
+  hideFeedbackToast();
 }
 function dismissFeedbackToast(){
   hideFeedbackToast();
@@ -663,73 +1450,164 @@ function dismissFeedbackToast(){
   feedbackTimer = null;
 }
 async function quickFeedbackFromToast(vote){
+  await submitFeedbackFromGate(vote);
+}
+async function submitFeedbackFromGate(vote){
   setFeedbackVote(vote);
-  dismissFeedbackToast();
-  await submitFeedback();
+  const gateStatus = document.getElementById('feedbackGateStatus');
+  if(gateStatus){
+    gateStatus.classList.remove('err');
+    gateStatus.textContent = 'Сохраняем оценку…';
+  }
+  setFeedbackGateBusy(true);
+  try{
+    await submitFeedback({fromGate:true});
+  }finally{
+    setFeedbackGateBusy(false);
+  }
+}
+function latestHistoryNeedsFeedback(state){
+  if(!state) return false;
+  const hist = Array.isArray(state.history) ? state.history : [];
+  const last = hist.length ? hist[hist.length - 1] : (state.last_history_entry || null);
+  if(!last) return !!state.feedback_required;
+  const vote = String(last.feedback_vote || '').trim().toLowerCase();
+  if(vote === 'like' || vote === 'dislike') return false;
+  // skipped / empty / missing vote → still must rate before next gen/edit
+  return true;
 }
 function scheduleFeedbackPrompt(state){
   const zone = document.getElementById('feedbackZone');
   clearTimeout(feedbackTimer);
   feedbackTimer = null;
+  hideFeedbackToast();
+  // Keep optional side form closed after render/refresh.
+  // Do NOT auto-open the blocking gate here — only when user tries next action.
+  if(zone) zone.classList.remove('open', 'required', 'blocking');
+  if(!pendingAfterFeedback) closeFeedbackGate();
   if(!state || !state.has_final){
-    zone.classList.remove('open');
-    hideFeedbackToast();
     feedbackPromptedHistoryId = '';
     feedbackToastDismissedFor = '';
     return;
   }
-  zone.classList.add('open');
-  if(!state.feedback_required){
-    hideFeedbackToast();
+  const needs = latestHistoryNeedsFeedback(state);
+  state.feedback_required = needs;
+  if(!needs){
+    closeFeedbackGate();
     return;
   }
-  const history = state.last_history_entry || {};
+  const hist = Array.isArray(state.history) ? state.history : [];
+  const history = hist.length ? hist[hist.length - 1] : (state.last_history_entry || {});
   const renderId = String(history.id || 'current');
   if(feedbackPromptedHistoryId !== renderId){
     feedbackVote = '';
     setFeedbackVote('');
     feedbackToastDismissedFor = '';
-    document.getElementById('feedbackIssue').value = '';
-    document.getElementById('feedbackComment').value = '';
-    document.getElementById('feedbackContact').value = '';
-    document.getElementById('feedbackStatus').textContent = '';
+    const issue = document.getElementById('feedbackIssue');
+    const comment = document.getElementById('feedbackComment');
+    const gateComment = document.getElementById('feedbackGateComment');
+    const contact = document.getElementById('feedbackContact');
+    const status = document.getElementById('feedbackStatus');
+    if(issue) issue.value = '';
+    if(comment) comment.value = '';
+    if(gateComment) gateComment.value = '';
+    if(contact) contact.value = '';
+    if(status) status.textContent = 'Оценка нужна перед следующей генерацией, правкой или новым проектом.';
     feedbackPromptedHistoryId = renderId;
-    hideFeedbackToast();
   }
-  if(feedbackToastDismissedFor === renderId) return;
-  feedbackTimer = setTimeout(() => {
-    if(!lastState || !lastState.feedback_required) return;
-    if(feedbackPromptedHistoryId !== renderId) return;
-    if(feedbackToastDismissedFor === renderId) return;
-    showFeedbackToast();
-  }, FEEDBACK_TOAST_DELAY_MS);
 }
-async function submitFeedback(){
+function requireFeedbackBeforeAction(pending){
+  // Правки по разметке/чату не блокируем оценкой — иначе нельзя итеративно править.
+  // Оценка обязательна перед новой генерацией или новым проектом.
+  const kind = (pending && pending.type) || '';
+  if(kind === 'chat') return false;
+  if(latestHistoryNeedsFeedback(lastState)){
+    if(lastState) lastState.feedback_required = true;
+    promptFeedbackRequired(
+      'Сначала оцените предыдущий результат (Нравится / Не нравится) — после оценки продолжим.',
+      pending || null
+    );
+    return true;
+  }
+  return false;
+}
+async function resumePendingAfterFeedback(){
+  const pending = pendingAfterFeedback;
+  pendingAfterFeedback = null;
+  if(!pending || !pending.type) return;
   const statusEl = document.getElementById('feedbackStatus');
+  if(statusEl) statusEl.textContent = 'Оценка принята — продолжаем…';
+  const gateStatus = document.getElementById('feedbackGateStatus');
+  if(gateStatus) gateStatus.textContent = 'Оценка принята — продолжаем…';
+  if(pending.type === 'generate'){
+    await runStudioGeneration({skipFeedbackGate:true});
+    return;
+  }
+  if(pending.type === 'chat'){
+    await sendChat({skipFeedbackGate:true});
+    return;
+  }
+  if(pending.type === 'createProject'){
+    await createProject({skipFeedbackGate:true});
+  }
+}
+async function submitFeedback(opts){
+  const statusEl = document.getElementById('feedbackStatus');
+  const gateStatus = document.getElementById('feedbackGateStatus');
   const btn = document.getElementById('feedbackSubmitBtn');
+  const fromGate = !!(opts && opts.fromGate);
   if(statusEl) statusEl.textContent = '';
   if(!feedbackVote){
     if(statusEl) statusEl.textContent = 'Выберите: нравится или не нравится.';
-    openFeedbackZone();
+    openFeedbackGate({message:'Сначала выберите: Нравится или Не нравится.'});
     return;
   }
   if(!projectId) return;
   try{
     if(btn) btn.disabled = true;
+    setFeedbackGateBusy(true);
     const fd = new FormData();
     fd.append('vote', feedbackVote);
-    fd.append('issue_type', document.getElementById('feedbackIssue').value || '');
-    fd.append('comment', document.getElementById('feedbackComment').value || '');
-    fd.append('contact', document.getElementById('feedbackContact').value || '');
+    fd.append('issue_type', document.getElementById('feedbackIssue')?.value || '');
+    const gateComment = (document.getElementById('feedbackGateComment')?.value || '').trim();
+    const sideComment = (document.getElementById('feedbackComment')?.value || '').trim();
+    const comment = fromGate ? (gateComment || sideComment) : (sideComment || gateComment);
+    fd.append('comment', comment);
+    fd.append('contact', document.getElementById('feedbackContact')?.value || '');
     await api(`/api/projects/${projectId}/feedback`, {method:'POST', body: fd});
-    if(statusEl) statusEl.textContent = 'Спасибо! Оценка сохранена для обучения.';
+    const gateCommentEl = document.getElementById('feedbackGateComment');
+    if(gateCommentEl) gateCommentEl.value = '';
+    if(document.getElementById('feedbackComment') && fromGate && gateComment){
+      document.getElementById('feedbackComment').value = gateComment;
+    }
+    if(statusEl) statusEl.textContent = 'Спасибо! Оценка сохранена к этой версии в истории.';
+    if(gateStatus){
+      gateStatus.classList.remove('err');
+      gateStatus.textContent = 'Спасибо! Продолжаем…';
+    }
     lastState.feedback_required = false;
+    if(Array.isArray(lastState.history) && lastState.history.length){
+      const last = lastState.history[lastState.history.length - 1];
+      if(last) last.feedback_vote = feedbackVote;
+    }
+    const zone = document.getElementById('feedbackZone');
+    if(zone) zone.classList.remove('required', 'blocking');
     hideFeedbackToast();
     dismissFeedbackToast();
+    closeFeedbackGate();
+    try{ await refreshState(); }catch(_){}
+    await resumePendingAfterFeedback();
   }catch(err){
-    if(statusEl) statusEl.textContent = String(err.message || err);
+    const msg = String(err.message || err);
+    if(statusEl) statusEl.textContent = msg;
+    if(gateStatus){
+      gateStatus.classList.add('err');
+      gateStatus.textContent = msg;
+    }
+    if(fromGate) openFeedbackGate({});
   }finally{
     if(btn) btn.disabled = false;
+    setFeedbackGateBusy(false);
   }
 }
 function maybeShowWelcomeTour(){
@@ -740,12 +1618,21 @@ function maybeShowWelcomeTour(){
 }
 function previewHistory(url){
   const img = document.getElementById('finalImg');
+  if(!img || !url) return;
+  const next = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
   img.onload = () => syncEditMarkupCanvas();
-  img.src = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+  img.onerror = () => setError('Не удалось загрузить версию из истории');
+  img.src = next;
   clearEditMarkup();
 }
-async function restoreHistoryVersion(historyId){
-  if(!projectId || busy || historyId == null || historyId === '') return;
+async function restoreHistoryVersion(historyId, previewUrl){
+  if(!projectId || historyId == null || historyId === '') return;
+  if(busy){
+    setError('Дождитесь окончания текущей операции, затем переключите версию');
+    return;
+  }
+  // Instant preview so the main result never goes blank while the API runs.
+  if(previewUrl) previewHistory(previewUrl);
   try{
     setBusy(true, 'Восстанавливаю версию #' + historyId + ' как активную…');
     const fd = new FormData();
@@ -754,6 +1641,9 @@ async function restoreHistoryVersion(historyId){
     clearEditMarkup();
     await refreshState();
     setBusy(false, data.message || ('Версия #' + historyId + ' активна. Рисуйте и жмите «Отправить».'));
+    try{
+      document.getElementById('resultCard')?.scrollIntoView({behavior:'smooth', block:'center'});
+    }catch(_){}
   }catch(err){
     setError(String(err.message || err));
     busy = false;
@@ -786,45 +1676,147 @@ function updateEditToolUi(){
   }
   syncQuickPromptsForTool();
   if(hint){
-    if(editTool === 'eraser'){
+    if(editTool === 'eraser' || editTool === 'brush' || markupUsedBrush || markupUsedEraser){
       hint.style.display = 'block';
       hint.classList.add('busy');
-      hint.textContent = 'Ластик включён: отметьте светильники голубым и выберите вариант в чате (голубые кнопки) или напишите сами.';
-    } else if(editTool === 'brush'){
-      hint.style.display = 'block';
-      hint.classList.add('busy');
-      hint.textContent = 'Кисть включена: отметьте зону красным и выберите вариант в чате (красные кнопки) или напишите сами.';
+      const parts = [];
+      if(editTool === 'brush') parts.push('Шаг 1: рисуйте красным на фото');
+      if(editTool === 'eraser') parts.push('Шаг 1: рисуйте голубым на фото');
+      if(markupHasPaint()) parts.push('зона есть — дальше шаг 2 в чате справа');
+      else parts.push('сначала отметьте зону на фото');
+      hint.textContent = parts.join(' · ') + '.';
     } else {
       hint.style.display = 'none';
       hint.classList.remove('busy');
     }
   }
   if(input){
-    if(editTool === 'eraser'){
-      input.placeholder = 'Что убрать? Или нажмите голубую кнопку ниже…';
+    if(markupHasPaint()){
+      input.placeholder = markupUsedEraser && !markupUsedBrush
+        ? 'Шаг 2: выберите шаблон «Убери…» или напишите, что убрать в голубой зоне…'
+        : (markupUsedBrush && !markupUsedEraser
+          ? 'Шаг 2: выберите шаблон «Измени…/Проставь…» или напишите, что сделать в красной зоне…'
+          : 'Шаг 2: выберите шаблон(ы) или опишите правку по отмеченным зонам…');
+    } else if(editTool === 'eraser'){
+      input.placeholder = 'Сначала отметьте зону голубым на фото…';
     } else if(editTool === 'brush'){
-      input.placeholder = 'Что сделать в зоне? Или нажмите красную кнопку ниже…';
+      input.placeholder = 'Сначала отметьте зону красным на фото…';
     } else {
-      input.placeholder = 'Что хотите сделать? Например: убери левый / проставь прожектор в зоне…';
+      input.placeholder = 'Можно просто написать: убери левый / сделай теплее / проставь прожектор у входа…';
     }
   }
+  updateMarkupNextStep();
+}
+function updateMarkupNextStep(){
+  const box = document.getElementById('markupNextStep');
+  const panel = document.getElementById('chatStepPanel');
+  const chatCard = document.getElementById('chatCard');
+  const chatWrap = document.getElementById('chatSendTour');
+  const idleNote = document.getElementById('chatIdleNote');
+  const quick = document.getElementById('quickPrompts');
+  const title = document.getElementById('chatStepTitle');
+  const hasPaint = !tourActive && markupHasPaint();
+  const needsText = hasPaint && !(document.getElementById('chatInput')?.value || '').trim();
+  if(box) box.classList.toggle('open', hasPaint);
+  if(panel) panel.classList.toggle('open', hasPaint);
+  if(chatCard) chatCard.classList.toggle('awaiting-instruction', needsText);
+  if(chatWrap) chatWrap.classList.toggle('needs-instruction', needsText);
+  if(idleNote) idleNote.style.display = hasPaint ? 'none' : '';
+  if(quick) quick.classList.toggle('awaiting', hasPaint);
+  if(title){
+    if(markupUsedBrush && markupUsedEraser){
+      title.textContent = 'Красная и голубая зоны отмечены — что сделать?';
+    } else if(markupUsedEraser && !markupUsedBrush){
+      title.textContent = 'Голубая зона отмечена — что убрать?';
+    } else if(markupUsedBrush){
+      title.textContent = 'Красная зона отмечена — что изменить?';
+    } else {
+      title.textContent = 'Зона отмечена — что сделать?';
+    }
+  }
+}
+function revealChatStepPanel(focusInput){
+  syncQuickPromptsForTool();
+  updateMarkupNextStep();
+  const card = document.getElementById('chatCard');
+  try{ card?.scrollIntoView({behavior:'smooth', block:'start'}); }catch(_){}
+  if(focusInput) focusChatInstruction();
+  else {
+    const root = document.getElementById('quickPrompts');
+    try{ root?.scrollIntoView({behavior:'smooth', block:'nearest'}); }catch(_){}
+  }
+}
+function focusChatInstruction(){
+  const input = document.getElementById('chatInput');
+  const wrap = document.getElementById('chatSendTour');
+  syncQuickPromptsForTool();
+  updateMarkupNextStep();
+  try{ document.getElementById('chatCard')?.scrollIntoView({behavior:'smooth', block:'start'}); }catch(_){}
+  if(wrap) wrap.classList.add('needs-instruction');
+  if(input){
+    try{ input.focus({preventScroll:true}); }catch(_){ try{ input.focus(); }catch(__){} }
+  }
+  const box = document.getElementById('statusBox');
+  if(box){
+    box.classList.remove('busy', 'err');
+    box.textContent = 'В чате справа: напишите правку или нажмите шаблон, затем «Отправить».';
+  }
+}
+function scrollToQuickTemplates(){
+  syncQuickPromptsForTool();
+  updateMarkupNextStep();
+  const root = document.getElementById('quickPrompts');
+  try{ document.getElementById('chatCard')?.scrollIntoView({behavior:'smooth', block:'start'}); }catch(_){}
+  try{ root?.scrollIntoView({behavior:'smooth', block:'nearest'}); }catch(_){}
+  if(root){
+    root.classList.add('awaiting');
+    root.style.outline = '2px solid #4fd1c5';
+    setTimeout(() => { try{ root.style.outline = ''; }catch(_){} }, 1600);
+  }
+  const box = document.getElementById('statusBox');
+  if(box){
+    box.classList.remove('busy', 'err');
+    box.textContent = markupUsedEraser && !markupUsedBrush
+      ? 'В чате: нажмите голубой шаблон «Убери…», затем «Отправить».'
+      : (markupUsedBrush && !markupUsedEraser
+        ? 'В чате: нажмите красный шаблон, затем «Отправить».'
+        : 'В чате: выберите шаблон(ы), затем «Отправить».');
+  }
+}
+function promptMarkupInstructionNeeded(){
+  updateMarkupNextStep();
+  setError('Зона отмечена. В чате справа выберите шаблон или напишите, что сделать — затем «Отправить».');
+  revealChatStepPanel(false);
+  highlightChatInstruction();
+}
+function highlightChatInstruction(){
+  const wrap = document.getElementById('chatSendTour');
+  const input = document.getElementById('chatInput');
+  const card = document.getElementById('chatCard');
+  if(card) card.classList.add('awaiting-instruction');
+  if(wrap){
+    wrap.classList.add('needs-instruction');
+    setTimeout(() => {
+      if(input && !(input.value || '').trim() && markupHasPaint()) wrap.classList.add('needs-instruction');
+    }, 0);
+  }
+  try{ input?.focus({preventScroll:true}); }catch(_){ try{ input?.focus(); }catch(__){} }
 }
 function syncQuickPromptsForTool(){
   const brushGroup = document.getElementById('quickBrushGroup');
   const eraserGroup = document.getElementById('quickEraserGroup');
   const root = document.getElementById('quickPrompts');
-  if(brushGroup) brushGroup.classList.toggle('open', editTool === 'brush');
-  if(eraserGroup) eraserGroup.classList.toggle('open', editTool === 'eraser');
+  // Show chat quick buttons only after the user has actually drawn —
+  // turning on brush/eraser alone must keep attention on the photo.
+  // During the interactive tour, keep chat panels closed so demos stay on the result.
+  const showPanels = !tourActive && (markupUsedBrush || markupUsedEraser);
+  if(brushGroup) brushGroup.classList.toggle('open', showPanels && markupUsedBrush);
+  if(eraserGroup) eraserGroup.classList.toggle('open', showPanels && markupUsedEraser);
   if(!root) return;
   root.querySelectorAll('button[data-tool="any"]').forEach(btn => {
-    btn.classList.toggle('dim', !!editTool);
+    btn.classList.remove('dim');
   });
-  if(editTool === 'brush' || editTool === 'eraser'){
-    try{
-      const chatCard = root.closest('.card') || root;
-      chatCard.scrollIntoView({behavior:'smooth', block:'nearest'});
-    }catch(_){}
-  }
+  // Do not scroll to chat on tool toggle — user must stay on the image to draw.
 }
 function toggleEditTool(tool){
   const next = (tool === 'eraser') ? 'eraser' : 'brush';
@@ -832,13 +1824,18 @@ function toggleEditTool(tool){
   editTool = turningOn ? next : null;
   updateEditToolUi();
   if(turningOn){
-    const input = document.getElementById('chatInput');
-    if(input){
-      try{ input.focus({preventScroll:false}); }catch(_){ input.focus(); }
+    if(lastState.has_final) setMarkupEnabled(true);
+    const stage = document.getElementById('resultStage');
+    const canvas = document.getElementById('editMarkupCanvas');
+    try{ stage?.scrollIntoView({behavior:'smooth', block:'nearest'}); }catch(_){}
+    try{ canvas?.focus({preventScroll:true}); }catch(_){ try{ canvas?.focus(); }catch(__){} }
+    const box = document.getElementById('statusBox');
+    if(box){
+      box.classList.remove('busy', 'err');
+      box.textContent = editTool === 'eraser'
+        ? 'Ластик включён: рисуйте голубым на фото, затем опишите правку в чате'
+        : 'Кисть включена: рисуйте красным на фото, затем опишите правку в чате';
     }
-    setBusy(false, editTool === 'eraser'
-      ? 'Ластик: отметьте зону и выберите голубой вариант в чате'
-      : 'Кисть: отметьте зону и выберите красный вариант в чате');
   }
 }
 function setEditTool(tool){
@@ -905,10 +1902,12 @@ function editDrawPoint(e, isStart){
     ctx.globalCompositeOperation = 'source-over';
     ctx.strokeStyle = 'rgba(79,209,197,0.85)';
     ctx.fillStyle = 'rgba(79,209,197,0.85)';
+    if(!markupUsedEraser){ markupUsedEraser = true; updateEditToolUi(); }
   } else {
     ctx.globalCompositeOperation = 'source-over';
     ctx.strokeStyle = 'rgba(255,70,70,0.88)';
     ctx.fillStyle = 'rgba(255,70,70,0.88)';
+    if(!markupUsedBrush){ markupUsedBrush = true; updateEditToolUi(); }
   }
   if(isStart || !editLastPoint){
     ctx.beginPath();
@@ -937,9 +1936,90 @@ function bindMarkupCanvas(){
     if(!editMarkupReady || !editTool || !editDrawing) return;
     editDrawPoint(e, false);
   });
-  canvas.addEventListener('pointerup', ()=>{ editDrawing=false; editLastPoint=null; });
+  canvas.addEventListener('pointerup', ()=>{
+    editDrawing=false; editLastPoint=null;
+    if(markupHasPaint()){
+      updateEditToolUi();
+      openZoneIntentPanel();
+      const box = document.getElementById('statusBox');
+      if(box && !busy){
+        box.classList.remove('busy', 'err');
+        box.textContent = 'Зона отмечена → в окне: что сделать с этим местом, затем «Отправить правку».';
+      }
+    }
+  });
   canvas.addEventListener('pointerleave', ()=>{ editDrawing=false; editLastPoint=null; });
   window.addEventListener('resize', ()=>{ if(editMarkupReady) syncEditMarkupCanvas(); });
+}
+function openZoneIntentPanel(){
+  const overlay = document.getElementById('zoneIntentOverlay');
+  const title = document.getElementById('zoneIntentTitle');
+  const lead = document.getElementById('zoneIntentLead');
+  const input = document.getElementById('zoneIntentInput');
+  if(!overlay) return;
+  if(title){
+    if(markupUsedBrush && markupUsedEraser){
+      title.textContent = 'Красная и голубая зоны — что сделать?';
+    } else if(markupUsedEraser && !markupUsedBrush){
+      title.textContent = 'Голубая зона — что убрать?';
+    } else if(markupUsedBrush){
+      title.textContent = 'Красная зона — что сделать здесь?';
+    } else {
+      title.textContent = 'Что сделать с этой зоной?';
+    }
+  }
+  if(lead){
+    lead.textContent = markupUsedEraser && !markupUsedBrush
+      ? 'Отмечено место для удаления света. Выберите «Убрать» или опишите своими словами.'
+      : 'Отмечено место на фасаде. Можно поставить прожектор/линейный, изменить или убрать — остальное не тронем.';
+  }
+  // Prefer brush presets when both used; hide irrelevant chips lightly via opacity.
+  document.querySelectorAll('#zoneIntentPresets [data-intent]').forEach((btn)=>{
+    const intent = btn.getAttribute('data-intent') || '';
+    let show = true;
+    if(markupUsedEraser && !markupUsedBrush){
+      show = intent === 'remove' || intent === 'change';
+    } else if(markupUsedBrush && !markupUsedEraser){
+      show = intent !== 'remove';
+    }
+    btn.style.display = show ? '' : 'none';
+  });
+  overlay.classList.add('open');
+  try{ input?.focus({preventScroll:true}); }catch(_){ try{ input?.focus(); }catch(__){} }
+  updateMarkupNextStep();
+}
+function closeZoneIntentPanel(clearInput){
+  const overlay = document.getElementById('zoneIntentOverlay');
+  const input = document.getElementById('zoneIntentInput');
+  if(overlay) overlay.classList.remove('open');
+  if(clearInput && input) input.value = '';
+}
+function pickZoneIntent(text){
+  const input = document.getElementById('zoneIntentInput');
+  if(!input) return;
+  const next = String(text || '').trim();
+  if(!next) return;
+  const cur = (input.value || '').trim();
+  input.value = cur ? (cur.replace(/\s+$/,'') + '\n' + next) : next;
+  try{ input.focus({preventScroll:true}); }catch(_){}
+}
+async function submitZoneIntent(){
+  const zoneInput = document.getElementById('zoneIntentInput');
+  const chatInput = document.getElementById('chatInput');
+  const text = (zoneInput && zoneInput.value || '').trim();
+  if(!text){
+    setError('Напишите или выберите, что сделать с зоной');
+    try{ zoneInput?.focus(); }catch(_){}
+    return;
+  }
+  if(!markupHasPaint()){
+    setError('Сначала отметьте зону на фото');
+    return;
+  }
+  if(chatInput) chatInput.value = text;
+  closeZoneIntentPanel(false);
+  await sendChat({skipFeedbackGate:true});
+  if(zoneInput) zoneInput.value = '';
 }
 function clearEditMarkup(){
   const canvas = document.getElementById('editMarkupCanvas');
@@ -950,7 +2030,22 @@ function clearEditMarkup(){
   editTool = null;
   editDrawing = false;
   editLastPoint = null;
+  markupUsedBrush = false;
+  markupUsedEraser = false;
+  closeZoneIntentPanel(true);
   updateEditToolUi();
+  const next = document.getElementById('markupNextStep');
+  if(next) next.classList.remove('open');
+  const panel = document.getElementById('chatStepPanel');
+  if(panel) panel.classList.remove('open');
+  const card = document.getElementById('chatCard');
+  if(card) card.classList.remove('awaiting-instruction');
+  const wrap = document.getElementById('chatSendTour');
+  if(wrap) wrap.classList.remove('needs-instruction');
+  const quick = document.getElementById('quickPrompts');
+  if(quick) quick.classList.remove('awaiting');
+  const idleNote = document.getElementById('chatIdleNote');
+  if(idleNote) idleNote.style.display = '';
 }
 function markupHasPaint(){
   const canvas = document.getElementById('editMarkupCanvas');
@@ -987,6 +2082,8 @@ function resetStudioUi(){
   editTool = null;
   editDrawing = false;
   editLastPoint = null;
+  markupUsedBrush = false;
+  markupUsedEraser = false;
   feedbackVote = '';
   feedbackPromptedHistoryId = '';
   feedbackToastDismissedFor = '';
@@ -1023,16 +2120,32 @@ function resetStudioUi(){
   document.getElementById('startBtn').disabled = !projectId;
 
   const feedbackZone = document.getElementById('feedbackZone');
-  if(feedbackZone) feedbackZone.classList.remove('open');
-  const toast = document.getElementById('feedbackToast');
-  if(toast) toast.classList.remove('open');
+  if(feedbackZone) feedbackZone.classList.remove('open', 'required', 'blocking');
+  closeFeedbackGate();
+  hideFeedbackToast();
+  pendingAfterFeedback = null;
   setFeedbackVote('');
   updateEditToolUi();
 }
-async function createProject(){
+async function resolveStudioImageModel(){
+  // Always use server default — ignore stale localStorage (it was pinning old expensive models).
+  try{ localStorage.removeItem('niteos_routerai_model'); }catch(_){}
+  if(studioImageModel) return studioImageModel;
+  try{
+    const health = await api('/api/health');
+    studioImageModel = String(health.routerai_model || '').trim();
+  }catch(_){
+    studioImageModel = '';
+  }
+  return studioImageModel;
+}
+async function createProject(opts){
+  if(!(opts && opts.skipFeedbackGate) && requireFeedbackBeforeAction({type:'createProject'})) return;
   try{
     setBusy(true, 'Создаю новый проект…');
-    const data = await api('/api/projects', {method:'POST', body: new URLSearchParams({name:'AI Studio', mode:'dealer'})});
+    const body = new URLSearchParams({name:'AI Studio', mode:'agent_studio'});
+    if(projectId) body.append('from_project_id', projectId);
+    const data = await api('/api/projects', {method:'POST', body});
     projectId = data.id || data.project_id || (data.project && (data.project.id || data.project.project_id)) || '';
     if(!projectId) throw new Error('Не удалось создать проект');
     history.replaceState({}, '', '/studio?project=' + projectId);
@@ -1044,7 +2157,11 @@ async function createProject(){
     setBusy(false, 'Новый проект пустой. Вставьте фото (Ctrl+V) или выберите файл.');
     return projectId;
   }catch(err){
-    setError(String(err.message || err));
+    if(err.status === 409){
+      promptFeedbackRequired(err.message, {type:'createProject'});
+    } else {
+      setError(String(err.message || err));
+    }
     busy = false;
     throw err;
   }
@@ -1066,7 +2183,10 @@ async function ensureProject(){
 async function refreshState(){
   if(!projectId) return;
   const data = await api(`/api/projects/${projectId}/studio/state`);
-  applyStudioPayload(data);
+  await applyStudioPayload(data);
+  // Don't dismiss an in-flight generation overlay here — applyStudioPayload holds it
+  // until the new final image is painted.
+  if(busy) return;
   if(data.has_source && !data.has_final) setBusy(false, 'Фото есть. Можно запускать анализ → генерацию.');
   if(!data.has_source) setBusy(false, 'Скопируйте фото и нажмите Ctrl+V — или выберите файл');
 }
@@ -1233,6 +2353,7 @@ function confirmPhotoCheckAndStart(){
 }
 async function startStudio(){
   if(!projectId || busy) return;
+  if(requireFeedbackBeforeAction({type:'generate'})) return;
   if(!(lastState && lastState.has_source) && !document.getElementById('dropzone').classList.contains('has-image')){
     setError('Сначала загрузите фото фасада');
     return;
@@ -1244,69 +2365,90 @@ async function startStudio(){
   }
   openPhotoCheck();
 }
-async function runStudioGeneration(){
+async function runStudioGeneration(opts){
   if(!projectId || busy) return;
+  if(!(opts && opts.skipFeedbackGate) && requireFeedbackBeforeAction({type:'generate'})) return;
   try{
     setBusy(true, 'Анализ фасада… подбор стиля… генерация…');
     const fd = new FormData();
-    const model = localStorage.getItem('niteos_routerai_model') || '';
+    const model = await resolveStudioImageModel();
     if(model) fd.append('routerai_model', model);
     await api(`/api/projects/${projectId}/studio/start`, {method:'POST', body: fd});
     clearEditMarkup();
+    // Overlay stays until refreshState paints the new final image.
     await refreshState();
   }catch(err){
-    setError(String(err.message || err));
-    busy = false;
+    if(err.status === 409){
+      setBusy(false);
+      promptFeedbackRequired(err.message, {type:'generate'});
+    } else {
+      setError(String(err.message || err));
+    }
   }
 }
 async function startStudioLegacy(){
   // kept for safety if anything still calls old name mid-generation
   return runStudioGeneration();
 }
-async function sendChat(){
+async function sendChat(opts){
   if(!projectId || busy) return;
+  if(!(opts && opts.skipFeedbackGate) && requireFeedbackBeforeAction({type:'chat'})) return;
   const text = (document.getElementById('chatInput').value || '').trim();
   const annotationBlob = await exportEditAnnotationBlob();
   if(!text && !annotationBlob){
     setError('Напишите, что хотите изменить');
+    highlightChatInstruction();
     return;
   }
   if(annotationBlob && !text){
-    setError('С разметкой нужно описать правку: что убрать или изменить на отмеченных светильниках?');
-    const input = document.getElementById('chatInput');
-    if(input){
-      try{ input.focus(); }catch(_){}
-    }
+    promptMarkupInstructionNeeded();
     return;
   }
   try{
     setBusy(true, annotationBlob ? 'Агент правит отмеченные светильники по вашему тексту…' : 'Агент правит результат…');
     const fd = new FormData();
     fd.append('message', text);
-    const model = localStorage.getItem('niteos_routerai_model') || '';
+    const model = await resolveStudioImageModel();
     if(model) fd.append('routerai_model', model);
     if(annotationBlob) fd.append('annotation_file', annotationBlob, 'edit_annotation.png');
     await api(`/api/projects/${projectId}/studio/chat`, {method:'POST', body: fd});
     document.getElementById('chatInput').value = '';
     clearEditMarkup();
+    setBusy(true, 'Почти готово — загружаю обновлённый результат…');
+    // Overlay stays until the new result image is actually visible.
     await refreshState();
-    setBusy(false, 'Правка применена');
+    if(!busy) setBusy(false, 'Правка применена — смотрите результат в центре');
+    try{
+      document.getElementById('resultCard')?.scrollIntoView({behavior:'smooth', block:'center'});
+    }catch(_){}
   }catch(err){
-    setError(String(err.message || err));
-    busy = false;
+    if(err.status === 409){
+      setBusy(false);
+      promptFeedbackRequired(err.message, {type:'chat'});
+    } else {
+      setError(String(err.message || err));
+    }
   }
 }
 function fillChatPrompt(text){
-  // Only fill the textarea — never auto-send.
+  // Append into chat so brush + eraser presets can be combined; never auto-send.
   const input = document.getElementById('chatInput');
   if(!input) return;
-  input.value = text || '';
-  try{ input.focus(); }catch(_){}
+  const next = String(text || '').trim();
+  if(!next) return;
+  const cur = (input.value || '').trim();
+  input.value = cur ? (cur.replace(/\s+$/,'') + '\n' + next) : next;
+  const wrap = document.getElementById('chatSendTour');
+  if(wrap) wrap.classList.remove('needs-instruction');
+  try{ input.focus({preventScroll:true}); }catch(_){ try{ input.focus(); }catch(__){} }
   const box = document.getElementById('statusBox');
   if(box){
     box.classList.remove('busy', 'err');
-    box.textContent = 'Текст подставлен. Нажмите «Отправить», когда будете готовы.';
+    box.textContent = markupHasPaint()
+      ? 'Шаблон добавлен в чат. Можно дополнить текст и нажать «Отправить».'
+      : 'Текст добавлен в чат. Можно отправлять или дополнить.';
   }
+  updateMarkupNextStep();
 }
 // Keep old name as alias without auto-send (in case cached HTML still calls it).
 function quickChat(text){
@@ -1314,29 +2456,81 @@ function quickChat(text){
 }
 function downloadFinal(){
   if(!projectId) return;
-  window.open(`/api/projects/${projectId}/file/output/final_imported_render.png`, '_blank');
+  (async () => {
+    try{
+      const url = `/api/projects/${projectId}/file/output/final_imported_render.png?t=${Date.now()}`;
+      const res = await fetch(url, {credentials:'same-origin'});
+      if(!res.ok) throw new Error('Не удалось получить файл');
+      const blob = await res.blob();
+      const stamp = new Date().toISOString().slice(0,10).replace(/-/g,'');
+      const name = `niteos_концепция_${projectId.slice(0,8)}_${stamp}.png`;
+      const href = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = href;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(href);
+      setBusy(false, 'Скачано: ' + name);
+    }catch(err){
+      setError('Скачивание не удалось: ' + String(err.message || err));
+    }
+  })();
+}
+async function blobToPng(blob){
+  if(blob && blob.type === 'image/png') return blob;
+  const bmp = await createImageBitmap(blob);
+  const canvas = document.createElement('canvas');
+  canvas.width = bmp.width;
+  canvas.height = bmp.height;
+  canvas.getContext('2d').drawImage(bmp, 0, 0);
+  return await new Promise((resolve, reject) => {
+    canvas.toBlob((b) => b ? resolve(b) : reject(new Error('PNG convert failed')), 'image/png');
+  });
 }
 async function copyFinal(){
   if(!projectId) return;
+  const finalImg = document.getElementById('finalImg');
+  const url = (finalImg && finalImg.getAttribute('src'))
+    || `/api/projects/${projectId}/file/output/final_imported_render.png?t=${Date.now()}`;
   try{
-    const url = `/api/projects/${projectId}/file/output/final_imported_render.png?t=${Date.now()}`;
     const res = await fetch(url, {credentials:'same-origin'});
     if(!res.ok) throw new Error('Не удалось загрузить изображение');
-    const blob = await res.blob();
+    const raw = await res.blob();
+    const png = await blobToPng(raw);
     if(navigator.clipboard && window.ClipboardItem){
-      const type = blob.type || 'image/png';
-      await navigator.clipboard.write([new ClipboardItem({[type]: blob})]);
-      setBusy(false, 'Результат скопирован в буфер. Можно вставить (Ctrl+V) сюда или в другой проект.');
-    } else {
-      // Fallback: open image so user can copy manually
-      window.open(url, '_blank');
-      setBusy(false, 'Открыто в новой вкладке — скопируйте изображение вручную.');
+      try{
+        await navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': png })
+        ]);
+        setBusy(false, 'Фото скопировано в буфер обмена. Вставьте через Ctrl+V.');
+        return;
+      }catch(clipErr){
+        // HTTP / insecure context often blocks clipboard.write for images.
+      }
     }
+    const href = URL.createObjectURL(png);
+    const a = document.createElement('a');
+    a.href = href;
+    a.download = `niteos_концепция_${projectId.slice(0,8)}_${Date.now()}.png`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(href);
+    setBusy(false, 'Буфер недоступен в этом браузере/по HTTP. Файл скачан — откройте и Ctrl+C.');
   }catch(err){
     setError('Копирование не удалось: ' + String(err.message || err));
   }
 }
 bindMarkupCanvas();
+(function bindChatInstructionWatch(){
+  const input = document.getElementById('chatInput');
+  if(!input) return;
+  const sync = () => updateMarkupNextStep();
+  input.addEventListener('input', sync);
+  input.addEventListener('change', sync);
+})();
 ensureProject().then(() => {
   syncPhotoWarnVisibility();
   maybeShowWelcomeTour();

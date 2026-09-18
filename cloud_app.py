@@ -47,10 +47,11 @@ from vision_agent.orchestrator import (
 )
 from vision_agent.reference_catalog import EXAMPLES_DIR, THUMBS_DIR, get_reference_by_id, list_references_public, reference_path
 from vision_agent.studio_html import AGENT_STUDIO_HTML
+from vision_agent.video_studio_html import VIDEO_STUDIO_HTML
 
 
 ROOT = Path(__file__).resolve().parent
-load_dotenv(ROOT / ".env")
+load_dotenv(ROOT / ".env", override=True)
 CLOUD_DIR = ROOT / "cloud_data"
 PROJECTS_DIR = CLOUD_DIR / "projects"
 LIBRARY_DIR = CLOUD_DIR / "library"
@@ -64,12 +65,24 @@ VIZ_THUMBS_DIR = ROOT / "assets" / "viz_examples" / "thumbs"
 CLIENT_TEMPLATES_DIR = CLOUD_DIR / "client_templates"
 LEARNING_DIR = CLOUD_DIR / "learning"
 LEARNING_EVENTS_PATH = LEARNING_DIR / "events.jsonl"
+LEARNING_LIKED_DIR = LEARNING_DIR / "liked_gallery"
+LEARNING_LIKED_INDEX = LEARNING_DIR / "liked_index.jsonl"
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp"}
 
-for path in (PROJECTS_DIR, SOURCE_LIBRARY_DIR, IES_LIBRARY_DIR, STYLE_LIBRARY_DIR, FIXTURES_LIBRARY_DIR, IES_CATALOG_DIR, CLIENT_TEMPLATES_DIR, LEARNING_DIR):
+for path in (
+    PROJECTS_DIR,
+    SOURCE_LIBRARY_DIR,
+    IES_LIBRARY_DIR,
+    STYLE_LIBRARY_DIR,
+    FIXTURES_LIBRARY_DIR,
+    IES_CATALOG_DIR,
+    CLIENT_TEMPLATES_DIR,
+    LEARNING_DIR,
+    LEARNING_LIKED_DIR,
+):
     path.mkdir(parents=True, exist_ok=True)
 
-CONTACT_PHONE = os.getenv("CONTACT_PHONE", "+70123456789").strip()
+CONTACT_PHONE = os.getenv("CONTACT_PHONE", "8 843 202 21 39").strip()
 MAX_GROUP_JOIN_URL = os.getenv(
     "MAX_GROUP_JOIN_URL",
     "https://max.ru/join/srh_oL9y5t9jt9ZCA_wkQ1dXP5DjO0WmMO7a8IbSi3k",
@@ -110,30 +123,44 @@ def max_group_widget_html() -> str:
 <style>
 .max-group-fab{{
   position:fixed;bottom:14px;right:14px;z-index:40;
-  display:flex;align-items:center;gap:8px;
-  padding:7px 11px 7px 7px;border-radius:12px;border:1px solid #3a4552;
-  background:rgba(9,13,18,.94);backdrop-filter:blur(8px);
-  color:#dce9f8;text-decoration:none;font-size:12px;font-weight:600;line-height:1.25;
-  box-shadow:0 8px 28px rgba(0,0,0,.38);max-width:min(210px,calc(100vw - 24px));
+  display:flex;align-items:center;gap:10px;
+  padding:8px 12px 10px 8px;border-radius:12px;border:1px solid #3a4552;
+  border-bottom:3px solid #f5b942;
+  background:rgba(9,13,18,.96);backdrop-filter:blur(8px);
+  color:#dce9f8;text-decoration:none;font-size:12px;font-weight:700;line-height:1.25;
+  box-shadow:0 8px 28px rgba(0,0,0,.42);max-width:min(260px,calc(100vw - 24px));
 }}
-.max-group-fab:hover{{border-color:#5a8fd4;color:#fff}}
-.max-group-fab img{{width:44px;height:44px;border-radius:8px;background:#fff;display:block;flex-shrink:0}}
+.max-group-fab:hover{{border-color:#f5b942;color:#fff}}
+.max-group-fab img{{width:48px;height:48px;border-radius:8px;background:#fff;display:block;flex-shrink:0}}
+.max-group-fab .max-copy{{display:flex;flex-direction:column;gap:2px}}
+.max-group-fab .max-copy b{{font-size:13px;color:#fff}}
+.max-group-fab .max-copy small{{font-size:10px;font-weight:500;color:#9aa6b2;line-height:1.3}}
 @media(max-width:520px){{
-  .max-group-fab span{{display:none}}
+  .max-group-fab .max-copy small{{display:none}}
   .max-group-fab img{{width:40px;height:40px}}
   .max-group-fab{{bottom:10px;right:10px}}
 }}
 </style>
-<a class="max-group-fab" href="{url}" target="_blank" rel="noopener noreferrer" title="Вступить в группу MAX">
-  <img src="{qr_url}" width="44" height="44" alt="QR: группа MAX" loading="lazy">
-  <span>Группа<br>в MAX</span>
+<a class="max-group-fab" href="{url}" target="_blank" rel="noopener noreferrer" title="Поддержка в MAX: скрины, вопросы, предложения">
+  <img src="{qr_url}" width="48" height="48" alt="QR: поддержка MAX" loading="lazy">
+  <span class="max-copy"><b>Поддержка</b><small>Скрины, вопросы и предложения</small></span>
 </a>
 """
 
 
 def inject_page_widgets(html: str) -> str:
     widget = max_group_widget_html()
-    return html.replace("{{MAX_GROUP_WIDGET}}", widget)
+    html = html.replace("{{MAX_GROUP_WIDGET}}", widget)
+    from urllib.parse import quote
+    join_url = MAX_GROUP_JOIN_URL or "#"
+    qr_url = (
+        f"https://api.qrserver.com/v1/create-qr-code/?size=104x104&data={quote(join_url, safe='')}"
+        if MAX_GROUP_JOIN_URL else ""
+    )
+    return (
+        html.replace("{{MAX_GROUP_JOIN_URL}}", join_url)
+        .replace("{{MAX_GROUP_QR_URL}}", qr_url)
+    )
 
 
 IES_LINEAR = "МАГИСТРАЛЬ 205 170 ЛмВт [КОНСОЛЬ] Д.ies"
@@ -159,12 +186,6 @@ ROUTERAI_IMAGE_MODELS: list[dict[str, str]] = [
         "label": "Nano Banana 2 · Gemini 3.1 Flash Image",
         "eta": "~25–50 сек",
         "eta_sec": "40",
-    },
-    {
-        "id": "google/gemini-2.5-flash-image",
-        "label": "Nano Banana · Gemini 2.5 Flash Image",
-        "eta": "~20–40 сек",
-        "eta_sec": "30",
     },
     {
         "id": "google/gemini-3-pro-image",
@@ -458,16 +479,16 @@ def _load_watermark_font(size: int) -> ImageFont.ImageFont:
 
 
 def apply_niteos_watermark(final_path: Path) -> None:
-    """Centered diagonal watermark `niteos.ru` (~40% width, 45°)."""
+    """Centered horizontal watermark `niteos.ru` with soft glow (reference look)."""
     if not final_path.exists():
         return
     try:
         with Image.open(final_path).convert("RGBA") as img:
             w, h = img.size
             text = "niteos.ru"
-            target_w = max(48, int(w * 0.30))
-            lo, hi = 8, max(48, int(min(w, h) * 0.55))
-            font = _load_watermark_font(hi)
+            # Large across the facade, similar to production reference shots.
+            target_w = max(64, int(w * 0.58))
+            lo, hi = 8, max(64, int(min(w, h) * 0.72))
             probe = ImageDraw.Draw(Image.new("RGBA", (1, 1)))
             for _ in range(18):
                 mid = (lo + hi) // 2
@@ -481,25 +502,30 @@ def apply_niteos_watermark(final_path: Path) -> None:
             font = _load_watermark_font(max(8, hi))
             bbox = probe.textbbox((0, 0), text, font=font)
             tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
-            pad = 12
+            pad = max(24, th // 2)
             text_layer = Image.new("RGBA", (max(1, tw + pad * 2), max(1, th + pad * 2)), (0, 0, 0, 0))
             text_draw = ImageDraw.Draw(text_layer)
             tx, ty = pad - bbox[0], pad - bbox[1]
-            outline = (0, 0, 0, 90)
-            for dx, dy in ((-1, 0), (1, 0), (0, -1), (0, 1)):
-                text_draw.text((tx + dx, ty + dy), text, font=font, fill=outline)
-            text_draw.text((tx, ty), text, font=font, fill=(255, 255, 255, 128))
+            # Soft luminous halo behind the letters (lighting "power").
+            glow = Image.new("RGBA", text_layer.size, (0, 0, 0, 0))
+            glow_draw = ImageDraw.Draw(glow)
+            glow_draw.text((tx, ty), text, font=font, fill=(255, 255, 255, 210))
+            glow = glow.filter(ImageFilter.GaussianBlur(radius=max(6, th // 5)))
+            text_layer = Image.alpha_composite(text_layer, glow)
+            # Dark edge for readability on bright facade zones.
+            for dx, dy in ((-2, 0), (2, 0), (0, -2), (0, 2), (-1, -1), (1, -1), (-1, 1), (1, 1)):
+                text_draw.text((tx + dx, ty + dy), text, font=font, fill=(0, 0, 0, 110))
+            text_draw.text((tx, ty), text, font=font, fill=(255, 255, 255, 195))
             if text_layer.size[0] != target_w:
                 scale = target_w / max(1, text_layer.size[0])
                 text_layer = text_layer.resize(
                     (target_w, max(1, int(text_layer.size[1] * scale))),
                     Image.Resampling.LANCZOS,
                 )
-            rotated = text_layer.rotate(45, expand=True, resample=Image.Resampling.BICUBIC)
             overlay = Image.new("RGBA", img.size, (0, 0, 0, 0))
-            x = (w - rotated.size[0]) // 2
-            y = (h - rotated.size[1]) // 2
-            overlay.paste(rotated, (x, y), rotated)
+            x = (w - text_layer.size[0]) // 2
+            y = (h - text_layer.size[1]) // 2
+            overlay.paste(text_layer, (x, y), text_layer)
             out = Image.alpha_composite(img, overlay).convert("RGB")
             out.save(final_path, quality=95)
     except Exception as exc:
@@ -1854,11 +1880,18 @@ def save_rgb(src: Path, dst: Path) -> None:
 
 
 def close_pending_feedback_for_new_render(base: Path) -> None:
-    """Если прошлый рендер без оценки — зафиксировать как skipped и не терять историю."""
+    """Mark older pending entries as skipped only AFTER a rated version is being superseded.
+
+    Does not clear the gate on the latest unrated result — that must be voted first.
+    """
     meta = read_project_meta(base)
     history: list[dict] = list(meta.get("render_history") or [])
+    if len(history) < 2:
+        return
+    # Leave the newest entry alone; only close older pending ones when a newer
+    # result already exists (caller is appending yet another after a completed vote).
     changed = False
-    for entry in history:
+    for entry in history[:-1]:
         if not isinstance(entry, dict):
             continue
         if entry.get("feedback_vote"):
@@ -1876,10 +1909,61 @@ def close_pending_feedback_for_new_render(base: Path) -> None:
                 "feedback_skipped_at": entry["feedback_skipped_at"],
                 "feedback_vote": "",
             })
-    patch: dict = {"feedback_required": False}
     if changed:
-        patch["render_history"] = history
-    write_project_meta(base, patch)
+        write_project_meta(base, {"render_history": history})
+
+
+def latest_history_entry(meta: dict | None) -> dict:
+    history = list((meta or {}).get("render_history") or [])
+    if not history:
+        return {}
+    last = history[-1]
+    return last if isinstance(last, dict) else {}
+
+
+def history_entry_is_rated(entry: dict | None) -> bool:
+    if not isinstance(entry, dict):
+        return False
+    vote = (entry.get("feedback_vote") or "").strip().lower()
+    return vote in {"like", "dislike"}
+
+
+def latest_result_needs_feedback(base: Path) -> bool:
+    """True when the newest history version has no like/dislike yet.
+
+    `skipped` and the one-shot `feedback_required` flag are NOT enough to pass.
+    """
+    meta = read_project_meta(base)
+    history = list(meta.get("render_history") or [])
+    if not history:
+        return False
+    return not history_entry_is_rated(latest_history_entry(meta))
+
+
+def find_unrated_history_entry(meta: dict | None) -> dict:
+    """Prefer the newest unrated history item (gate target), else last_history_entry."""
+    history = list((meta or {}).get("render_history") or [])
+    for entry in reversed(history):
+        if isinstance(entry, dict) and not history_entry_is_rated(entry):
+            return entry
+    last = (meta or {}).get("last_history_entry")
+    if isinstance(last, dict) and last:
+        return last
+    return latest_history_entry(meta)
+
+
+def require_completed_feedback(base: Path) -> None:
+    """Block next generation/edit until the latest result has like/dislike.
+
+    Source of truth = last history entry vote (not a one-shot flag).
+    Auto-skipped entries do NOT count as rated.
+    """
+    if not latest_result_needs_feedback(base):
+        return
+    raise HTTPException(
+        status_code=409,
+        detail="Сначала оцените предыдущий результат (Нравится / Не нравится). Комментарий необязателен.",
+    )
 
 
 def update_generation_archive(rel_or_name: str, patch: dict) -> None:
@@ -1901,6 +1985,33 @@ def update_generation_archive(rel_or_name: str, patch: dict) -> None:
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
+def is_agent_studio_project(meta: dict | None = None, *, kind: str = "") -> bool:
+    """True when this project/history belongs to AI Studio (not dealer/reference studio)."""
+    m = meta or {}
+    if bool(m.get("agent_studio")):
+        return True
+    wm = str(m.get("work_mode") or "").strip().lower()
+    if wm in {"agent_studio", "studio", "agent"}:
+        return True
+    mode = str(m.get("mode") or "").strip().lower()
+    if mode in {"agent_studio", "studio", "agent"}:
+        return True
+    k = str(kind or "").strip().lower()
+    return k.startswith("studio_")
+
+
+def project_open_urls(base: Path, meta: dict | None = None, *, kind: str = "") -> dict:
+    """UI deep-links for admin/archives: AI Studio → /studio, else dealer."""
+    m = meta if isinstance(meta, dict) else read_project_meta(base)
+    studio = is_agent_studio_project(m, kind=kind)
+    return {
+        "studio": f"/studio?project={base.name}",
+        "dealer": f"/dealer?project={base.name}",
+        "open": f"/studio?project={base.name}" if studio else f"/dealer?project={base.name}",
+        "open_label": "Открыть в AI Studio" if studio else "Открыть в dealer",
+    }
+
+
 def archive_generation_record(base: Path, entry: dict, *, client_ip: str = "") -> str:
     """Автосбор полной карточки генерации в cloud_data/generations/ — без ожидания оценки."""
     meta = read_project_meta(base)
@@ -1909,21 +2020,43 @@ def archive_generation_record(base: Path, entry: dict, *, client_ip: str = "") -
     hist_id = entry.get("id")
     stamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
     fname = f"{stamp}_{base.name[:8]}_h{hist_id}_{uuid.uuid4().hex[:6]}.json"
+    kind = entry.get("kind") or ""
+    studio = is_agent_studio_project(meta, kind=kind) or is_agent_studio_project(entry, kind=kind)
+    agent_ref = base / "references" / "agent_ref_primary.png"
+    dealer_style = base / "references" / "style_reference_target.png"
+    if studio and agent_ref.exists():
+        style_file = "references/agent_ref_primary.png"
+    elif dealer_style.exists():
+        style_file = "references/style_reference_target.png"
+    else:
+        style_file = ""
+    urls = project_open_urls(base, meta, kind=kind)
+    urls.update({
+        "source": f"/api/projects/{base.name}/file/input/building.png" if (base / "input" / "building.png").exists() else "",
+        "final": f"/api/projects/{base.name}/file/output/{entry.get('file')}" if entry.get("file") else "",
+        "prompt": f"/api/projects/{base.name}/file/output/{entry.get('prompt_file')}" if entry.get("prompt_file") else "",
+        "style": f"/api/projects/{base.name}/file/{style_file}" if style_file else "",
+    })
     record = {
         "project_id": base.name,
         "history_id": hist_id,
-        "kind": entry.get("kind") or "",
+        "kind": kind,
         "created_at": entry.get("created_at") or now_iso(),
         "feedback_status": entry.get("feedback_status") or "pending",
         "feedback_vote": entry.get("feedback_vote") or "",
         "feedback_comment": entry.get("feedback_comment") or "",
         "feedback_contact": entry.get("feedback_contact") or "",
         "feedback_issue_type": entry.get("feedback_issue_type") or "",
-        "work_mode": entry.get("work_mode") or meta.get("work_mode") or "",
+        "work_mode": entry.get("work_mode") or meta.get("work_mode") or ("agent_studio" if studio else ""),
+        "agent_studio": bool(studio),
+        "source_studio": "agent_studio" if studio else "dealer",
         "scenario_id": entry.get("scenario_id") or meta.get("render_scenario_id") or meta.get("dealer_scenario_id") or "",
         "scenario_name": entry.get("scenario_name") or meta.get("render_scenario_name") or meta.get("dealer_scenario_name") or "",
         "product_id": entry.get("product_id") or meta.get("render_product_id") or meta.get("dealer_product_id") or "",
         "product_name": entry.get("product_name") or meta.get("render_product_name") or meta.get("dealer_product_name") or "",
+        "matched_ref_id": entry.get("matched_ref_id") or meta.get("matched_ref_id") or "",
+        "matched_ref_title": entry.get("matched_ref_title") or meta.get("matched_ref_title") or "",
+        "matched_ref_cluster": entry.get("matched_ref_cluster") or meta.get("matched_ref_cluster") or "",
         "auto_viz_ref": entry.get("auto_viz_ref") or meta.get("auto_viz_ref") or (auto_viz.get("filename") if isinstance(auto_viz, dict) else "") or "",
         "placement_family": entry.get("placement_family") or plan.get("family") or "",
         "placement_strategy": entry.get("placement_strategy") or plan.get("strategy") or plan.get("candidate_id") or "",
@@ -1937,17 +2070,12 @@ def archive_generation_record(base: Path, entry: dict, *, client_ip: str = "") -
         "prompt_file": entry.get("prompt_file") or "",
         "source_file": "input/building.png" if (base / "input" / "building.png").exists() else "",
         "final_file": "output/final_imported_render.png" if (base / "output" / "final_imported_render.png").exists() else "",
-        "style_file": "references/style_reference_target.png" if (base / "references" / "style_reference_target.png").exists() else "",
+        "style_file": style_file,
         "client_ip": client_ip or "",
         "render_audit": meta.get("last_render_audit") or {},
         "placement_plan": plan,
         "learning_guidance": meta.get("learning_guidance") or {},
-        "urls": {
-            "dealer": f"/dealer?project={base.name}",
-            "source": f"/api/projects/{base.name}/file/input/building.png" if (base / "input" / "building.png").exists() else "",
-            "final": f"/api/projects/{base.name}/file/output/{entry.get('file')}" if entry.get("file") else "",
-            "prompt": f"/api/projects/{base.name}/file/output/{entry.get('prompt_file')}" if entry.get("prompt_file") else "",
-        },
+        "urls": urls,
     }
     (GENERATIONS_DIR / fname).write_text(
         json.dumps(record, ensure_ascii=False, indent=2),
@@ -1958,6 +2086,7 @@ def archive_generation_record(base: Path, entry: dict, *, client_ip: str = "") -
         "archive": fname,
         "prompt_chars": record["prompt_chars"],
         "feedback_status": record["feedback_status"],
+        "agent_studio": bool(studio),
     })
     return fname
 
@@ -1998,6 +2127,17 @@ def save_render_history_entry(
     plan = meta.get("last_placement_plan") or {}
     auto_viz = meta.get("auto_viz") or {}
     ies_names = project_ies_names(base)
+    studio = is_agent_studio_project(meta, kind=kind)
+    work_mode = meta.get("work_mode") or ""
+    if studio and not work_mode:
+        work_mode = "agent_studio"
+    if studio:
+        work_mode = "agent_studio"
+    agent_ref_rel = (
+        "references/agent_ref_primary.png"
+        if studio and (base / "references" / "agent_ref_primary.png").exists()
+        else ""
+    )
     entry = {
         "id": seq,
         "file": f"history/{fname}",
@@ -2006,11 +2146,17 @@ def save_render_history_entry(
         "note": (note or prompt_text[:500] or "")[:500],
         "prompt": prompt_text[:12000],
         "created_at": now_iso(),
-        "work_mode": meta.get("work_mode") or "",
+        "work_mode": work_mode,
+        "agent_studio": bool(studio),
+        "source_studio": "agent_studio" if studio else "dealer",
         "scenario_id": meta.get("render_scenario_id") or meta.get("dealer_scenario_id") or meta.get("client_scenario_id") or "",
         "scenario_name": meta.get("render_scenario_name") or meta.get("dealer_scenario_name") or meta.get("client_scenario_name") or "",
         "product_id": meta.get("render_product_id") or meta.get("dealer_product_id") or meta.get("client_product_id") or "",
         "product_name": meta.get("render_product_name") or meta.get("dealer_product_name") or meta.get("client_product_name") or "",
+        "matched_ref_id": meta.get("matched_ref_id") or "",
+        "matched_ref_title": meta.get("matched_ref_title") or "",
+        "matched_ref_cluster": meta.get("matched_ref_cluster") or "",
+        "reference_file": agent_ref_rel or meta.get("reference_file") or "",
         "auto_viz_ref": meta.get("auto_viz_ref") or (auto_viz.get("filename") if isinstance(auto_viz, dict) else "") or "",
         "placement_family": plan.get("family") or "",
         "placement_strategy": plan.get("strategy") or plan.get("candidate_id") or "",
@@ -2248,6 +2394,75 @@ def append_learning_event(
     with (base / "learning_events.jsonl").open("a", encoding="utf-8") as handle:
         handle.write(line + "\n")
     return entry
+
+
+def promote_liked_render_to_learning_db(
+    base: Path,
+    *,
+    history_entry: dict | None,
+    feedback_entry: dict | None = None,
+) -> dict:
+    """Copy liked renders into a curated gallery used as future style/fixture memory."""
+    info = {"ok": False, "gallery_id": ""}
+    final_path = base / "output" / "final_imported_render.png"
+    hist_rel = ""
+    if history_entry:
+        hist_rel = str(history_entry.get("file") or "").strip()
+    candidate = base / "output" / hist_rel if hist_rel else final_path
+    if not candidate.exists():
+        candidate = final_path
+    if not candidate.exists():
+        info["error"] = "render_missing"
+        return info
+    gallery_id = (
+        f"{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_"
+        f"{base.name[:8]}_{uuid.uuid4().hex[:6]}"
+    )
+    dest_dir = LEARNING_LIKED_DIR / gallery_id
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    dest_img = dest_dir / "render.png"
+    try:
+        shutil.copy2(candidate, dest_img)
+    except OSError as exc:
+        info["error"] = str(exc)
+        return info
+    source = base / "input" / "building.png"
+    if source.exists():
+        try:
+            shutil.copy2(source, dest_dir / "source.png")
+        except OSError:
+            pass
+    meta = read_project_meta(base)
+    record = {
+        "gallery_id": gallery_id,
+        "created_at": now_iso(),
+        "project_id": base.name,
+        "render_file": str(dest_img.relative_to(LEARNING_DIR)).replace("\\", "/"),
+        "history_id": (history_entry or {}).get("id"),
+        "scenario_id": meta.get("render_scenario_id") or meta.get("client_scenario_id") or "",
+        "scenario_name": meta.get("render_scenario_name") or meta.get("client_scenario_name") or "",
+        "product_id": meta.get("render_product_id") or meta.get("client_product_id") or "",
+        "product_name": meta.get("render_product_name") or meta.get("client_product_name") or "",
+        "matched_ref_id": meta.get("matched_ref_id") or "",
+        "vote": "like",
+        "comment": ((feedback_entry or {}).get("comment") or "")[:1000],
+        "prompt": ((feedback_entry or {}).get("prompt") or "")[:4000],
+    }
+    (dest_dir / "meta.json").write_text(
+        json.dumps(record, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    LEARNING_LIKED_DIR.mkdir(parents=True, exist_ok=True)
+    with LEARNING_LIKED_INDEX.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+    append_learning_event(
+        base,
+        "liked_promoted_to_gallery",
+        vote="like",
+        payload={"gallery_id": gallery_id, "render_file": record["render_file"]},
+    )
+    info.update({"ok": True, "gallery_id": gallery_id, "render_file": record["render_file"]})
+    return info
 
 
 def learning_events_summary(limit: int = 20) -> dict:
@@ -3450,8 +3665,10 @@ def analyze_markup_colors(annotation_path: Path) -> dict:
                     r, g, b, a = px[x, y]
                     if a < 20:
                         continue
-                    # Cyan/aqua: G and B dominate R
-                    if g >= r + 15 and b >= r + 10 and g + b > r * 2:
+                    # Cyan/aqua OR blue strokes => remove tool
+                    if (g >= r + 15 and b >= r + 10 and g + b > r * 2) or (
+                        b >= r + 20 and b >= g + 8
+                    ):
                         cyan += 1
                     # Red/orange: R dominates
                     elif r >= g + 20 and r >= b + 20:
@@ -3469,6 +3686,95 @@ def analyze_markup_colors(annotation_path: Path) -> dict:
     except Exception:
         pass
     return result
+
+
+def scrub_markup_paint_residue(
+    edited_path: Path,
+    annotation_path: Path,
+    original_path: Path | None = None,
+) -> dict:
+    """Remove leftover red/cyan brush pixels the model copied into the final render.
+
+    Image models often echo the markup overlay. Where the annotation still looks
+    like paint and the result pixel matches that paint color, restore the original
+    (or a local non-paint neighbor) so strokes do not survive as red/cyan blobs.
+    """
+    info = {"ok": False, "scrubbed_pixels": 0}
+    if not (edited_path.exists() and annotation_path.exists()):
+        return info
+    try:
+        with Image.open(edited_path).convert("RGB") as edited:
+            with Image.open(annotation_path).convert("RGBA") as ann:
+                if ann.size != edited.size:
+                    ann = ann.resize(edited.size, Image.Resampling.LANCZOS)
+                original = None
+                if original_path is not None and Path(original_path).exists():
+                    original = Image.open(original_path).convert("RGB")
+                    if original.size != edited.size:
+                        original = original.resize(edited.size, Image.Resampling.LANCZOS)
+                ed = edited.load()
+                an = ann.load()
+                orig_px = original.load() if original is not None else None
+                w, h = edited.size
+                alpha = ann.split()[-1]
+                bbox = alpha.getbbox()
+                if not bbox:
+                    info.update({"ok": True, "scrubbed_pixels": 0})
+                    if original is not None:
+                        original.close()
+                    return info
+                x0, y0, x1, y1 = bbox
+                scrubbed = 0
+                for y in range(y0, y1):
+                    for x in range(x0, x1):
+                        r, g, b, a = an[x, y]
+                        if a < 24:
+                            continue
+                        er, eg, eb = ed[x, y]
+                        # Annotation stroke looks cyan/blue (remove tool)
+                        ann_cyan = (g >= r + 15 and b >= r + 10 and g + b > r * 2) or (
+                            b >= r + 20 and b >= g + 8
+                        )
+                        # Annotation stroke looks red/orange (change tool)
+                        ann_red = r >= g + 20 and r >= b + 20
+                        if not (ann_cyan or ann_red):
+                            continue
+                        # Result still looks like the same paint family
+                        res_cyan = (eg >= er + 12 and eb >= er + 8 and eg + eb > er * 2) or (
+                            eb >= er + 18 and eb >= eg + 6
+                        )
+                        res_red = er >= eg + 18 and er >= eb + 18
+                        paint_echo = (ann_cyan and res_cyan) or (ann_red and res_red)
+                        if not paint_echo:
+                            continue
+                        if orig_px is not None:
+                            ed[x, y] = orig_px[x, y]
+                        else:
+                            # Fallback: pull a nearby non-paint pixel
+                            replaced = False
+                            for dy, dx in ((0, -3), (0, 3), (-3, 0), (3, 0), (-5, 0), (5, 0)):
+                                nx, ny = x + dx, y + dy
+                                if not (0 <= nx < w and 0 <= ny < h):
+                                    continue
+                                nr, ng, nb = ed[nx, ny]
+                                if ann_red and nr >= ng + 18 and nr >= nb + 18:
+                                    continue
+                                if ann_cyan and ((ng >= nr + 12 and nb >= nr + 8) or (nb >= nr + 18)):
+                                    continue
+                                ed[x, y] = (nr, ng, nb)
+                                replaced = True
+                                break
+                            if not replaced:
+                                continue
+                        scrubbed += 1
+                if scrubbed:
+                    edited.save(edited_path, quality=95)
+                info.update({"ok": True, "scrubbed_pixels": scrubbed})
+                if original is not None:
+                    original.close()
+    except Exception as exc:
+        info["error"] = str(exc)
+    return info
 
 
 def blend_edit_with_markup_mask(
@@ -3498,19 +3804,29 @@ def blend_edit_with_markup_mask(
                     # Binary paint presence
                     mask = alpha.point(lambda v: 255 if v >= 18 else 0)
                     # Dilate so nearby beam/fixture body under a stroke is included.
-                    # Remove needs a bit more room for uplight cones.
-                    dilate_rounds = 5 if (mode or "") == "remove" else 3
+                    # Remove needs much more room: uplight cones often extend far above the stroke.
+                    dilate_rounds = 9 if (mode or "") == "remove" else 4
                     if (mode or "") == "place" or (mode or "") == "change":
-                        dilate_rounds = 4
+                        dilate_rounds = 5
+                    if (mode or "") == "mixed":
+                        dilate_rounds = 8
                     for _ in range(max(1, dilate_rounds)):
-                        mask = mask.filter(ImageFilter.MaxFilter(9))
+                        mask = mask.filter(ImageFilter.MaxFilter(11 if (mode or "") in {"remove", "mixed"} else 9))
                     # Extra upward expansion for projector beams (remove/change)
+                    up_shift = 0
                     if (mode or "") in {"remove", "change", "mixed", "place"}:
                         up = Image.new("L", mask.size, 0)
-                        shift = max(18, original.size[1] // 28)
-                        up.paste(mask, (0, -shift))
+                        up_shift = max(28, original.size[1] // 16)
+                        if (mode or "") in {"remove", "mixed"}:
+                            up_shift = max(40, original.size[1] // 10)
+                        up.paste(mask, (0, -up_shift))
                         mask = ImageChops.lighter(mask, up)
-                    feather = 10 if (mode or "") == "remove" else 8
+                        # Mild downward fill for fixture body / wall wash under the stroke
+                        down = Image.new("L", mask.size, 0)
+                        down_shift = max(12, original.size[1] // 30)
+                        down.paste(mask, (0, down_shift))
+                        mask = ImageChops.lighter(mask, down)
+                    feather = 14 if (mode or "") == "remove" else 8
                     if feather > 0:
                         mask = mask.filter(ImageFilter.GaussianBlur(radius=feather))
                     # White mask => take edited; black => keep original
@@ -3520,7 +3836,67 @@ def blend_edit_with_markup_mask(
                         mask.convert("L").save(edited_path.parent / "edit_blend_mask.png")
                     except Exception:
                         pass
-                    info.update({"ok": True, "dilate": dilate_rounds, "feather": feather})
+                    info.update({"ok": True, "dilate": dilate_rounds, "feather": feather, "up_shift": up_shift})
+    except Exception as exc:
+        info["error"] = str(exc)
+    return info
+
+
+def measure_masked_edit_delta(
+    before_path: Path,
+    after_path: Path,
+    annotation_path: Path,
+    *,
+    mode: str = "",
+) -> dict:
+    """Mean RGB abs-diff inside a dilated paint mask — detects no-op model edits."""
+    info = {"ok": False, "mean_delta": 0.0, "mask_pixels": 0, "mode": mode or ""}
+    if not (before_path.exists() and after_path.exists() and annotation_path.exists()):
+        return info
+    try:
+        with Image.open(before_path).convert("RGB") as before:
+            with Image.open(after_path).convert("RGB") as after:
+                with Image.open(annotation_path).convert("RGBA") as ann:
+                    if after.size != before.size:
+                        after = after.resize(before.size, Image.Resampling.LANCZOS)
+                    if ann.size != before.size:
+                        ann = ann.resize(before.size, Image.Resampling.LANCZOS)
+                    alpha = ann.split()[-1]
+                    mask = alpha.point(lambda v: 255 if v >= 18 else 0)
+                    rounds = 7 if (mode or "") in {"remove", "mixed"} else 4
+                    for _ in range(rounds):
+                        mask = mask.filter(ImageFilter.MaxFilter(9))
+                    if (mode or "") in {"remove", "mixed", "change", "place"}:
+                        up = Image.new("L", mask.size, 0)
+                        shift = max(28, before.size[1] // 14)
+                        up.paste(mask, (0, -shift))
+                        mask = ImageChops.lighter(mask, up)
+                    # Downsample for speed
+                    max_side = 640
+                    w, h = before.size
+                    scale = min(1.0, max_side / max(w, h))
+                    if scale < 1.0:
+                        nw, nh = max(1, int(w * scale)), max(1, int(h * scale))
+                        before = before.resize((nw, nh), Image.Resampling.BILINEAR)
+                        after = after.resize((nw, nh), Image.Resampling.BILINEAR)
+                        mask = mask.resize((nw, nh), Image.Resampling.BILINEAR)
+                    bp = before.load()
+                    ap = after.load()
+                    mp = mask.load()
+                    ww, hh = before.size
+                    total = 0.0
+                    count = 0
+                    step = 2 if max(ww, hh) > 400 else 1
+                    for y in range(0, hh, step):
+                        for x in range(0, ww, step):
+                            if mp[x, y] < 40:
+                                continue
+                            br, bg, bb = bp[x, y]
+                            ar, ag, ab = ap[x, y]
+                            total += (abs(br - ar) + abs(bg - ag) + abs(bb - ab)) / 3.0
+                            count += 1
+                    mean = (total / count) if count else 0.0
+                    info.update({"ok": True, "mean_delta": round(mean, 3), "mask_pixels": count})
     except Exception as exc:
         info["error"] = str(exc)
     return info
@@ -4344,14 +4720,17 @@ def edit_project_render(
             )
         if mode == "remove":
             instruction = (
-                "REMOVE ONLY the luminaires and light beams under CYAN paint marks. "
+                "CRITICAL LOCAL REMOVE: completely DELETE luminaires AND their light beams under CYAN/AQUA/BLUE paint marks. "
+                "After removal, restore the wall to match neighboring unmarked panels (same brightness/material — NOT black, NOT darker). "
+                "The marked lights must visibly disappear — a near-copy of Image 1 is a FAILED edit. "
                 "Do not remove, dim, or redesign any unmarked luminaire — copy them from Image 1. "
-                "Do not darken facade panels."
+                "Do not darken facade panels outside the marked removal."
             )
         elif mode == "change" and place:
             instruction = (
                 "PLACE/ADD the requested architectural luminaire ONLY inside RED paint marks "
                 "(e.g. projector uplight / linear / wash) with a realistic beam matching the scene. "
+                "The new light must be clearly visible in the red zone — a near-copy of Image 1 is a FAILED edit. "
                 "Do not invent fixtures outside red marks. "
                 "Do not remove or redesign unmarked luminaires — copy them from Image 1. "
                 "Do not invent new architecture or darken facade panels."
@@ -4360,22 +4739,86 @@ def edit_project_render(
             instruction = (
                 "CHANGE/REWORK ONLY the luminaires or beams under RED paint marks "
                 "(or place/add a fixture there if the user asks). "
+                "The marked zone must visibly change — a near-copy of Image 1 is a FAILED edit. "
                 "Do not remove or redesign any unmarked luminaire — copy them from Image 1. "
                 "Do not darken facade panels."
             )
         elif mode == "mixed":
             instruction = (
-                "CYAN marks = remove those luminaires+beams; "
+                "CYAN/BLUE marks = completely remove those luminaires+beams and restore the wall like neighbors; "
                 "RED marks = change existing luminaires OR place/add a fixture if the user asks. "
+                "Marked zones must visibly change — a near-copy of Image 1 is a FAILED edit. "
                 "Do not touch any unmarked luminaire — copy them from Image 1."
             )
         else:
             instruction = (
-                "Edit ONLY under paint marks (cyan=remove, red=change or place if asked). "
-                "Leave unmarked luminaires identical to Image 1."
+                "Edit ONLY under paint marks (cyan/blue=remove, red=change or place if asked). "
+                "Marked zones must visibly change. Leave unmarked luminaires identical to Image 1."
             )
         if user_note:
             instruction = f"{instruction} User request: {user_note}"
+
+        # Attach real NITEOS product / scenario references so place/change
+        # copies catalog fixtures instead of inventing random light blobs.
+        meta_now = read_project_meta(base)
+        product_id = (
+            str(meta_now.get("render_product_id") or "")
+            or str(meta_now.get("client_product_id") or "")
+            or str(meta_now.get("dealer_product_id") or "")
+        ).strip()
+        scenario_id = (
+            str(meta_now.get("render_scenario_id") or "")
+            or str(meta_now.get("client_scenario_id") or "")
+            or str(meta_now.get("dealer_scenario_id") or "")
+        ).strip()
+        if not product_id and scenario_id:
+            try:
+                product_id = product_id_for_scenario(client_scenario_by_id(scenario_id))
+            except Exception:
+                product_id = ""
+        product_ref_attached = False
+        scenario_ref_attached = False
+        if mode in {"change", "mixed", "place"} or place:
+            try:
+                if product_id:
+                    product = client_product_by_id(product_id)
+                    front = export_front_path(product["export_id"])
+                    app_ref = export_legacy_reference_path(product["export_id"])
+                    for ref_path in (front, app_ref):
+                        if ref_path is None or not ref_path.exists():
+                            continue
+                        prepared = prepare_image_for_vision(ref_path, max_side=1200)
+                        images.append(prepared)
+                        product_ref_attached = True
+                        break
+                    product_bits = build_product_instruction(product)
+                    instruction = (
+                        f"{instruction} "
+                        f"Match the catalog fixture look from the attached product reference image: "
+                        f"{product.get('name')} / {product.get('short_name')}. "
+                        f"{product_bits}"
+                    )
+            except Exception:
+                pass
+            try:
+                if scenario_id:
+                    scen_ref = scenario_reference_path(scenario_id)
+                    if scen_ref is not None and scen_ref.exists():
+                        images.append(prepare_image_for_vision(scen_ref, max_side=1200))
+                        scenario_ref_attached = True
+                        instruction += (
+                            " Also match beam rhythm/placement style from the attached scenario reference."
+                        )
+            except Exception:
+                pass
+            append_pipeline_log(base, "edit_catalog_refs", {
+                "product_id": product_id,
+                "scenario_id": scenario_id,
+                "product_ref_attached": product_ref_attached,
+                "scenario_ref_attached": scenario_ref_attached,
+                "mode": mode,
+                "place": place,
+            })
 
     prompt = (
         "Доработай ночной рендер архитектурной подсветки по инструкции. "
@@ -4395,15 +4838,17 @@ def edit_project_render(
         else:
             prompt += (
                 "Image 2 is the SAME render with paint marks showing which luminaires to edit. "
-                "RED = change marked fixtures only; CYAN = remove marked fixtures only. "
+                "RED = change marked fixtures only; CYAN/BLUE = remove marked fixtures only. "
                 "Unmarked fixtures must stay identical to Image 1. "
                 "Do not keep paint in the final image. "
             )
         if guide_path is not None:
             prompt += (
                 "Image 1 = clean render (copy all unmarked lights from here). "
-                "Image 2 = marks over the same render. "
-                "Output = Image 1 with ONLY marked luminaires edited. "
+                "Image 2 = marks over the same render — marks are ONLY a location guide. "
+                "NEVER copy red/cyan/blue paint into the output. Paint strokes must disappear completely. "
+                "Any later images are catalog product/scenario references for fixture shape and beam style. "
+                "Output = Image 1 with ONLY marked luminaires edited — and those edits MUST be obvious. "
             )
     else:
         prompt += (
@@ -4411,7 +4856,15 @@ def edit_project_render(
             "do not keep paint in the final image; do not darken facade materials. "
         )
     prompt += f"Инструкция: {instruction.strip()}"
-    prompt = append_facade_identity_lock(prompt)
+    # Markup edits: do NOT append the full facade identity lock — it pushes Gemini to clone Image 1
+    # and cancel local remove/change. Keep a short geometry lock instead.
+    if saved_annotation is not None:
+        prompt += (
+            "\n\nMARKUP EDIT LOCK: keep building silhouette/windows/materials/camera identical to Image 1; "
+            "ONLY luminaires under paint may change; unmarked lights stay as in Image 1; no new architecture."
+        )
+    else:
+        prompt = append_facade_identity_lock(prompt)
     append_pipeline_log(base, "edit_start", {
         "instruction": instruction.strip(),
         "has_annotation": bool(saved_annotation),
@@ -4422,18 +4875,30 @@ def edit_project_render(
     })
     edited_path = base / "output" / "final_imported_render.png"
     meta = read_project_meta(base)
-    model = router_model.strip() or (meta.get("routerai_model") or "")
+    # Prefer explicit edit model; do not fall back to a cheap first-gen model in meta.
+    model = (router_model or "").strip() or (meta.get("routerai_model") or "") or routerai_model()
     # Snapshot before AI overwrite so we can hard-lock unmarked pixels after the edit.
     original_backup = None
+    edit_aspect = image_aspect_ratio(final_path)
     if saved_annotation is not None and saved_annotation.exists():
         original_backup = base / "output" / "_edit_before.png"
         try:
             shutil.copy2(final_path, original_backup)
         except OSError:
             original_backup = None
-    _, api_log = call_routerai(prompt, images, edited_path, project_base=base, model=model)
+    _, api_log = call_routerai(
+        prompt,
+        images,
+        edited_path,
+        project_base=base,
+        model=model,
+        aspect_ratio=edit_aspect,
+    )
     append_pipeline_log(base, "routerai_edit", api_log)
-    if original_backup is not None and original_backup.exists() and saved_annotation is not None:
+
+    def _run_mask_blend() -> dict:
+        if original_backup is None or not original_backup.exists() or saved_annotation is None:
+            return {"ok": False, "skipped": True}
         blend_mode = str((markup_colors or {}).get("mode") or "")
         if blend_mode == "change":
             try:
@@ -4449,6 +4914,95 @@ def edit_project_render(
             mode=blend_mode,
         )
         append_pipeline_log(base, "edit_mask_blend", blend_info)
+        scrub_info = scrub_markup_paint_residue(
+            edited_path,
+            saved_annotation,
+            original_backup,
+        )
+        append_pipeline_log(base, "edit_paint_scrub", scrub_info)
+        blend_info["paint_scrub"] = scrub_info
+        return blend_info
+
+    _run_mask_blend()
+
+    # If the model barely changed pixels inside the paint mask, retry once with a harsher remove/change prompt.
+    if (
+        saved_annotation is not None
+        and original_backup is not None
+        and original_backup.exists()
+        and edited_path.exists()
+    ):
+        mode_now = str((markup_colors or {}).get("mode") or "")
+        delta = measure_masked_edit_delta(
+            original_backup, edited_path, saved_annotation, mode=mode_now,
+        )
+        append_pipeline_log(base, "edit_delta_check", delta)
+        # ~4.0 mean RGB delta inside mask ≈ visually "almost same"
+        if delta.get("ok") and float(delta.get("mean_delta") or 0) < 4.0 and int(delta.get("mask_pixels") or 0) >= 20:
+            retry_instruction = instruction.strip()
+            if mode_now == "remove":
+                retry_instruction = (
+                    "FAILED previous attempt looked identical to Image 1. "
+                    "NOW aggressively ERASE every cyan/blue-marked luminaire and its entire beam/cone. "
+                    "Fill the wall with the SAME tone as adjacent unmarked cladding. "
+                    "Unmarked lights must stay identical to Image 1. "
+                    "Do not leave glow, hotspot, or fixture body in cyan zones."
+                )
+                note = ""
+                if "User request:" in instruction:
+                    note = instruction.split("User request:")[-1].strip()
+                elif "user_note" in locals() and user_note:
+                    note = str(user_note).strip()
+                if note:
+                    retry_instruction += f" User request: {note}"
+            elif mode_now in {"change", "mixed", "place"}:
+                retry_instruction = (
+                    "FAILED previous attempt looked identical to Image 1. "
+                    "NOW make an OBVIOUS local lighting change only under paint marks "
+                    "(cyan/blue=remove, red=change/place as asked). "
+                    "Unmarked luminaires stay identical to Image 1."
+                )
+                if "User request:" in instruction:
+                    note = instruction.split("User request:")[-1].strip()
+                    if note:
+                        retry_instruction += f" User request: {note}"
+            retry_prompt = (
+                "Local architectural lighting edit only. Keep building geometry identical to Image 1. "
+                "Image 1 = clean render. Image 2 = paint marks on the same render. "
+                "Marked zones MUST visibly change. No paint in output. "
+                f"Инструкция: {retry_instruction}"
+            )
+            append_pipeline_log(base, "edit_retry_start", {
+                "reason": "low_masked_delta",
+                "prev_delta": delta,
+                "instruction": retry_instruction,
+            })
+            # Restore before-image so retry starts from the true original, not the no-op.
+            try:
+                shutil.copy2(original_backup, edited_path)
+            except OSError:
+                pass
+            retry_images = [original_backup if original_backup.exists() else final_path]
+            if guide_path is not None and Path(guide_path).exists():
+                retry_images.append(guide_path)
+            elif saved_annotation.exists():
+                retry_images.append(saved_annotation)
+            _, retry_log = call_routerai(
+                retry_prompt,
+                retry_images,
+                edited_path,
+                project_base=base,
+                model=model,
+                aspect_ratio=edit_aspect,
+            )
+            append_pipeline_log(base, "routerai_edit_retry", retry_log)
+            _run_mask_blend()
+            delta2 = measure_masked_edit_delta(
+                original_backup, edited_path, saved_annotation, mode=mode_now,
+            )
+            append_pipeline_log(base, "edit_delta_check_retry", delta2)
+
+    if original_backup is not None:
         try:
             original_backup.unlink(missing_ok=True)
         except Exception:
@@ -4608,14 +5162,144 @@ def dealer_page() -> str:
 
 @app.get("/admin", response_class=HTMLResponse)
 def admin_page() -> str:
-    """Отдельное окно: истории сессий, рендеров и размещений."""
+    """Окно истории для dealer / референс-режима (эталоны, сценарии)."""
     return inject_page_widgets(ADMIN_HTML)
+
+
+@app.get("/admin/studio", response_class=HTMLResponse)
+def admin_studio_page() -> str:
+    """Отдельное окно истории для AI Studio (source → результат, без каталога эталонов)."""
+    return inject_page_widgets(ADMIN_STUDIO_HTML)
 
 
 @app.get("/studio", response_class=HTMLResponse)
 def studio_page() -> str:
     """Vision Agent Studio: анализ фасада → референс → генерация → чат."""
     return inject_page_widgets(AGENT_STUDIO_HTML)
+
+
+@app.get("/video", response_class=HTMLResponse)
+def video_studio_page() -> str:
+    """Отдельное окно: фото/рендер → короткий видеоролик для КП."""
+    return inject_page_widgets(VIDEO_STUDIO_HTML)
+
+
+@app.post("/api/video/generate")
+async def video_generate(
+    request: Request,
+    prompt: str = Form(""),
+    mode: str = Form("from_photo"),
+    duration_sec: int = Form(6),
+    project_id: str = Form(""),
+    image: UploadFile | None = File(None),
+) -> dict:
+    """Queue / stub for facade video generation.
+
+    When VIDEO_API_KEY (or provider endpoint) is configured, this will call the
+    video model. Until then it stores the request artifacts for the project and
+    returns a clear ready-state message for the UI.
+    """
+    pid = (project_id or "").strip()
+    if pid:
+        base = project_dir(pid)
+    else:
+        pid = uuid.uuid4().hex[:12]
+        base = PROJECTS_DIR / pid
+        ensure_project_dirs(base)
+        write_project_meta(base, {
+            "id": pid,
+            "name": "Video project",
+            "created_at": now_iso(),
+            "work_mode": "video_studio",
+            "status": "video_queued",
+            "mode": "video_studio",
+        })
+        append_pipeline_log(base, "project_created", {"mode": "video_studio"})
+
+    video_dir = base / "output" / "video"
+    video_dir.mkdir(parents=True, exist_ok=True)
+    saved_image = ""
+    if image is not None and image.filename:
+        raw = await image.read()
+        ext = Path(image.filename).suffix.lower() or ".png"
+        if ext not in IMAGE_EXTS:
+            ext = ".png"
+        target = video_dir / f"source{ext}"
+        target.write_bytes(raw)
+        saved_image = project_relpath(base, target)
+        # Also seed studio source if missing
+        building = base / "input" / "building.png"
+        if not building.exists():
+            try:
+                save_rgb(target, building)
+            except Exception:
+                shutil.copy2(target, building)
+
+    job = {
+        "created_at": now_iso(),
+        "prompt": (prompt or "").strip()[:4000],
+        "mode": (mode or "from_photo").strip()[:64],
+        "duration_sec": max(3, min(12, int(duration_sec or 6))),
+        "source_image": saved_image,
+        "status": "queued",
+        "provider": (os.getenv("VIDEO_API_PROVIDER") or "").strip() or "unset",
+    }
+    (video_dir / "last_job.json").write_text(
+        json.dumps(job, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    write_project_meta(base, {
+        "work_mode": "video_studio",
+        "last_video_job": job,
+        "status": "video_queued",
+    })
+    append_pipeline_log(base, "video_generate_request", job)
+    track_project_action(base, "video_generate_request", request, {
+        "mode": job["mode"],
+        "duration_sec": job["duration_sec"],
+        "has_image": bool(saved_image),
+    })
+
+    api_key = (os.getenv("VIDEO_API_KEY") or "").strip()
+    if not api_key:
+        return {
+            "ok": True,
+            "ready": False,
+            "project_id": pid,
+            "message": (
+                "Запрос сохранён. Видео-провайдер ещё не подключён "
+                "(нужен VIDEO_API_KEY). Можно продолжить правки в AI Studio."
+            ),
+            "preview_note": "Артефакты задачи лежат в output/video/last_job.json",
+            "job": job,
+            "studio_url": f"/studio?project={pid}",
+        }
+
+    # Provider hook placeholder — keep response stable for UI.
+    job["status"] = "provider_pending"
+    (video_dir / "last_job.json").write_text(
+        json.dumps(job, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    return {
+        "ok": True,
+        "ready": False,
+        "project_id": pid,
+        "message": "Ключ VIDEO_API_KEY найден — интеграция провайдера в подключении.",
+        "preview_note": "Следующий шаг: вызов video API и сохранение mp4 в output/video/.",
+        "job": job,
+        "studio_url": f"/studio?project={pid}",
+    }
+
+
+@app.get("/assets/studio_tour/{filename}")
+def studio_tour_asset(filename: str):
+    """Static images for the interactive 'How it works' tour."""
+    safe = Path(filename).name
+    if safe != filename or ".." in filename:
+        raise HTTPException(status_code=400, detail="Invalid filename")
+    path = ROOT / "assets" / "studio_tour" / safe
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="Not found")
+    return FileResponse(path)
 
 
 # Клиентский режим временно отключён — см. CLIENT_HTML
@@ -4681,20 +5365,40 @@ def visitor_limits(request: Request, response: Response) -> dict:
 
 
 @app.post("/api/projects")
-def create_project(request: Request, name: str = Form("New project"), mode: str = Form("dealer")) -> dict:
+def create_project(
+    request: Request,
+    name: str = Form("New project"),
+    mode: str = Form("dealer"),
+    from_project_id: str = Form(""),
+) -> dict:
+    # If creating from an existing Studio project, require its latest result to be rated.
+    src = (from_project_id or "").strip()
+    if src:
+        require_completed_feedback(project_dir(src))
     project_id = uuid.uuid4().hex[:12]
     base = PROJECTS_DIR / project_id
     ensure_project_dirs(base)
     ip = log_ip_activity(action="project_created", request=request, project_id=project_id)
-    write_project_meta(base, {
+    mode_raw = (mode or "dealer").strip().lower()
+    if mode_raw in {"agent", "studio", "agent_studio"}:
+        mode_norm = "agent_studio"
+    elif mode_raw in {"dealer", "client"}:
+        mode_norm = mode_raw
+    else:
+        mode_norm = "dealer"
+    meta_out = {
         "id": project_id,
         "name": name,
         "status": "created",
-        "mode": mode if mode in {"dealer", "client"} else "dealer",
+        "mode": mode_norm,
         "created_at": now_iso(),
         "created_from_ip": ip,
-    })
-    append_pipeline_log(base, "project_created", {"client_ip": ip, "name": name})
+    }
+    if mode_norm == "agent_studio":
+        meta_out["work_mode"] = "agent_studio"
+        meta_out["agent_studio"] = True
+    write_project_meta(base, meta_out)
+    append_pipeline_log(base, "project_created", {"client_ip": ip, "name": name, "from_project_id": src, "mode": mode_norm})
     return get_project(project_id)
 
 
@@ -4751,10 +5455,6 @@ def client_template_preview(template_id: str):
     if path:
         return FileResponse(path)
     raise HTTPException(status_code=404, detail="Preview not found")
-
-
-def require_completed_feedback(base: Path) -> None:
-    return
 
 
 @app.post("/api/projects/{project_id}/client-render")
@@ -5372,16 +6072,28 @@ def studio_start(
 ) -> dict:
     visitor_id = enforce_daily_render_quota(request, response)
     base = project_dir(project_id)
-    track_project_action(base, "studio_start", request, {"visitor_id": visitor_id})
+    require_completed_feedback(base)
+    # Always use server default (.env / routerai_model.txt). Ignore client overrides.
+    # Do NOT call routerai_model() here — the Form arg shadows the helper function.
+    model = resolve_routerai_model("")
+    track_project_action(base, "studio_start", request, {
+        "visitor_id": visitor_id,
+        "routerai_model": model,
+        "client_model_ignored": (routerai_model or "").strip(),
+    })
     try:
-        result = run_studio_start(base, _studio_deps(), router_model=routerai_model)
+        result = run_studio_start(base, _studio_deps(), router_model=model)
     except Exception as e:
         track_project_action(base, "studio_start_error", request, {"error": str(e)})
         write_project_meta(base, {"status": "studio_error", "error": str(e)})
         raise HTTPException(status_code=400, detail=str(e)) from e
-    track_project_action(base, "studio_start_ok", request, {"scheme": (result.get("state") or {}).get("scheme")})
+    track_project_action(base, "studio_start_ok", request, {
+        "scheme": (result.get("state") or {}).get("scheme"),
+        "routerai_model": model,
+    })
     payload = get_studio_state(base)
     payload["explanation"] = result.get("explanation") or ""
+    payload["routerai_model"] = model
     return payload
 
 
@@ -5397,18 +6109,23 @@ async def studio_chat(
 ) -> dict:
     visitor_id = enforce_daily_render_quota(request, response)
     base = project_dir(project_id)
+    # Edits/chat revisions must stay available without a like/dislike gate —
+    # otherwise users cannot iterate on markup. New generation still requires feedback.
     has_ann = bool(annotation) or (annotation_file is not None and bool(getattr(annotation_file, "filename", None)))
+    model = resolve_routerai_model("")
     track_project_action(base, "studio_chat", request, {
         "visitor_id": visitor_id,
         "message": (message or "")[:200],
         "has_annotation": has_ann,
+        "routerai_model": model,
+        "client_model_ignored": (routerai_model or "").strip(),
     })
     try:
         result = run_studio_chat(
             base,
             _studio_deps(),
             message,
-            router_model=routerai_model,
+            router_model=model,
             annotation_data_url=annotation or None,
             annotation_upload=annotation_file,
         )
@@ -5419,6 +6136,7 @@ async def studio_chat(
     payload["reply"] = result.get("reply") or ""
     payload["intent"] = result.get("intent") or {}
     payload["has_markup"] = bool(result.get("has_markup"))
+    payload["routerai_model"] = model
     return payload
 
 
@@ -5463,6 +6181,7 @@ async def edit_render(
     annotation_file: UploadFile | None = File(None),
 ) -> dict:
     base = project_dir(project_id)
+    require_completed_feedback(base)
     has_ann = bool(annotation) or (annotation_file is not None and bool(getattr(annotation_file, "filename", None)))
     track_project_action(base, "edit_request", request, {"has_annotation": has_ann})
     try:
@@ -5471,6 +6190,7 @@ async def edit_render(
             instruction,
             annotation_data_url=annotation or None,
             annotation_upload=annotation_file,
+            router_model=resolve_routerai_model(""),
         )
     except Exception as e:
         track_project_action(base, "edit_error", request, {"error": str(e)})
@@ -5500,7 +6220,11 @@ def submit_project_feedback(
         raise HTTPException(status_code=400, detail="Выберите: нравится или не нравится")
     safe_rating = rating_from_vote(safe_vote) if safe_vote else max(0, min(5, int(rating or 0)))
     safe_issue_type = normalize_feedback_issue_type(issue_type)
-    history_entry = meta.get("last_history_entry") or {}
+    # Always attach the vote to the newest unrated version (gate source of truth),
+    # not merely to whatever is currently open in the UI after restore.
+    history_entry = find_unrated_history_entry(meta)
+    if not history_entry:
+        history_entry = meta.get("last_history_entry") or {}
     placement_plan = meta.get("last_placement_plan") or {}
     ip = client_ip_from_request(request)
     prompt_used = ""
@@ -5565,6 +6289,14 @@ def submit_project_feedback(
         contact=entry["contact"],
         issue_type=safe_issue_type,
     )
+    liked_promo = {}
+    if safe_vote == "like":
+        liked_promo = promote_liked_render_to_learning_db(
+            base,
+            history_entry=history_entry,
+            feedback_entry=entry,
+        )
+        append_pipeline_log(base, "liked_gallery_promote", liked_promo)
     write_project_meta(base, {"feedback_required": False, "last_feedback_at": now_iso(), "last_feedback_vote": safe_vote})
     append_pipeline_log(base, "feedback_submitted", {
         "vote": safe_vote,
@@ -5575,6 +6307,7 @@ def submit_project_feedback(
         "file": fname,
         "client_ip": ip,
         "render_history_id": history_entry.get("id"),
+        "liked_gallery_id": liked_promo.get("gallery_id") or "",
     })
     log_ip_activity(action="feedback_submitted", request=request, project_id=project_id, detail={
         "vote": safe_vote,
@@ -5583,7 +6316,12 @@ def submit_project_feedback(
         "has_comment": bool(entry["comment"]),
         "has_contact": bool(entry["contact"]),
     })
-    return {"ok": True, "learning_event_id": learning_event["event_id"], "vote": safe_vote}
+    return {
+        "ok": True,
+        "learning_event_id": learning_event["event_id"],
+        "vote": safe_vote,
+        "liked_gallery": liked_promo,
+    }
 
 
 @app.get("/api/admin/learning-summary")
@@ -5633,16 +6371,29 @@ def _admin_project_card(base: Path) -> dict:
     source = base / "input" / "building.png"
     final = base / "output" / "final_imported_render.png"
     style = base / "references" / "style_reference_target.png"
+    agent_ref = base / "references" / "agent_ref_primary.png"
     plan = meta.get("last_placement_plan") or {}
     auto_viz = meta.get("auto_viz") or {}
     history = list(meta.get("render_history") or [])
+    studio = is_agent_studio_project(meta)
+    urls = project_open_urls(base, meta)
+    style_path = agent_ref if (studio and agent_ref.exists()) else style
+    style_rel = (
+        "references/agent_ref_primary.png" if style_path == agent_ref and agent_ref.exists()
+        else ("references/style_reference_target.png" if style.exists() else "")
+    )
     return {
         "project_id": base.name,
         "project_name": meta.get("name") or base.name,
         "status": meta.get("status") or "",
         "updated_at": meta.get("updated_at") or "",
-        "work_mode": meta.get("work_mode") or "",
+        "mode": meta.get("mode") or "",
+        "work_mode": meta.get("work_mode") or ("agent_studio" if studio else ""),
+        "agent_studio": bool(studio),
+        "source_studio": "agent_studio" if studio else "dealer",
         "scenario_name": meta.get("render_scenario_name") or meta.get("dealer_scenario_name") or "",
+        "matched_ref_title": meta.get("matched_ref_title") or "",
+        "matched_ref_id": meta.get("matched_ref_id") or "",
         "auto_viz_ref": meta.get("auto_viz_ref") or (auto_viz.get("filename") if isinstance(auto_viz, dict) else "") or "",
         "auto_reason": (auto_viz.get("reason") if isinstance(auto_viz, dict) else "") or "",
         "placement_family": plan.get("family") or "",
@@ -5654,31 +6405,47 @@ def _admin_project_card(base: Path) -> dict:
         "render_history_count": len(history),
         "has_source": source.exists(),
         "has_final": final.exists(),
-        "has_style": style.exists(),
+        "has_style": bool(style_rel),
         "source_url": f"/api/projects/{base.name}/file/input/building.png" if source.exists() else "",
         "final_url": f"/api/projects/{base.name}/file/output/final_imported_render.png" if final.exists() else "",
-        "style_url": f"/api/projects/{base.name}/file/references/style_reference_target.png" if style.exists() else "",
-        "dealer_url": f"/dealer?project={base.name}",
+        "style_url": f"/api/projects/{base.name}/file/{style_rel}" if style_rel else "",
+        "dealer_url": urls["dealer"],
+        "studio_url": urls["studio"],
+        "open_url": urls["open"],
+        "open_label": urls["open_label"],
     }
 
 
 @app.get("/api/admin/sessions")
-def admin_sessions(password: str = "", limit: int = 50) -> dict:
+def admin_sessions(password: str = "", limit: int = 50, studio_only: int = 0) -> dict:
     """Список проектов/сессий с превью source/final для админ-окна."""
     if CATALOG_ADMIN_PASSWORD and password != CATALOG_ADMIN_PASSWORD:
         raise HTTPException(status_code=403, detail="Forbidden")
     limit = max(1, min(int(limit or 50), 200))
+    only_studio = bool(int(studio_only or 0))
     projects = sorted(PROJECTS_DIR.glob("*"), key=lambda p: p.stat().st_mtime if p.exists() else 0, reverse=True)
-    items = [_admin_project_card(base) for base in projects if base.is_dir()][:limit]
-    return {"ok": True, "count": len(items), "items": items}
+    items = []
+    for base in projects:
+        if not base.is_dir():
+            continue
+        card = _admin_project_card(base)
+        # /admin/studio — только AI Studio.
+        # /admin — все проекты как раньше (прошлые расчёты не прячем).
+        if only_studio and not card.get("agent_studio"):
+            continue
+        items.append(card)
+        if len(items) >= limit:
+            break
+    return {"ok": True, "count": len(items), "items": items, "studio_only": only_studio}
 
 
 @app.get("/api/admin/render-history")
-def admin_render_history(password: str = "", limit: int = 100) -> dict:
+def admin_render_history(password: str = "", limit: int = 100, studio_only: int = 0) -> dict:
     """Сводка истории генераций по всем проектам для админ-проверки со временем."""
     if CATALOG_ADMIN_PASSWORD and password != CATALOG_ADMIN_PASSWORD:
         raise HTTPException(status_code=403, detail="Forbidden")
     limit = max(1, min(int(limit or 100), 500))
+    only_studio = bool(int(studio_only or 0))
     items: list[dict] = []
     projects = sorted(PROJECTS_DIR.glob("*"), key=lambda p: p.stat().st_mtime if p.exists() else 0, reverse=True)
     for base in projects:
@@ -5689,19 +6456,34 @@ def admin_render_history(password: str = "", limit: int = 100) -> dict:
         auto_viz = meta.get("auto_viz") or {}
         source = base / "input" / "building.png"
         history = list(meta.get("render_history") or [])
+        project_is_studio = is_agent_studio_project(meta)
         for entry in reversed(history):
             if not isinstance(entry, dict):
                 continue
             rel = str(entry.get("file") or "")
             file_path = (base / "output" / rel) if rel else None
+            kind = entry.get("kind") or ""
+            studio = is_agent_studio_project(entry, kind=kind) or is_agent_studio_project(meta, kind=kind)
+            # /admin/studio — только AI Studio записи.
+            # /admin — полная история как раньше (ничего не скрываем).
+            if only_studio and not studio:
+                continue
+            urls = project_open_urls(base, meta, kind=kind)
+            ann_rel = str(entry.get("annotation_file") or "").replace("\\", "/")
+            ann_bare = ann_rel.split("/")[-1] if ann_rel else ""
             items.append({
                 "project_id": base.name,
                 "project_name": meta.get("name") or base.name,
                 "history_id": entry.get("id"),
-                "kind": entry.get("kind") or "",
+                "kind": kind,
                 "created_at": entry.get("created_at") or "",
-                "work_mode": entry.get("work_mode") or meta.get("work_mode") or "",
+                "work_mode": entry.get("work_mode") or meta.get("work_mode") or ("agent_studio" if studio else ""),
+                "agent_studio": bool(studio),
+                "source_studio": entry.get("source_studio") or ("agent_studio" if studio else "dealer"),
                 "scenario_name": entry.get("scenario_name") or meta.get("render_scenario_name") or meta.get("dealer_scenario_name") or "",
+                "matched_ref_title": entry.get("matched_ref_title") or meta.get("matched_ref_title") or "",
+                "matched_ref_id": entry.get("matched_ref_id") or meta.get("matched_ref_id") or "",
+                "matched_ref_cluster": entry.get("matched_ref_cluster") or meta.get("matched_ref_cluster") or "",
                 "auto_viz_ref": entry.get("auto_viz_ref") or meta.get("auto_viz_ref") or (auto_viz.get("filename") if isinstance(auto_viz, dict) else "") or "",
                 "placement_family": entry.get("placement_family") or plan.get("family") or "",
                 "placement_strategy": entry.get("placement_strategy") or plan.get("strategy") or "",
@@ -5728,8 +6510,15 @@ def admin_render_history(password: str = "", limit: int = 100) -> dict:
                 "exists": bool(file_path and file_path.exists()),
                 "url": f"/api/projects/{base.name}/file/output/{rel}" if rel else "",
                 "source_url": f"/api/projects/{base.name}/file/input/building.png" if source.exists() else "",
+                "annotation_url": (
+                    f"/api/projects/{base.name}/file/history/{ann_bare}"
+                    if ann_bare else ""
+                ),
                 "last_feedback_vote": entry.get("feedback_vote") or meta.get("last_feedback_vote") or "",
-                "dealer_url": f"/dealer?project={base.name}",
+                "dealer_url": urls["dealer"],
+                "studio_url": urls["studio"],
+                "open_url": urls["open"],
+                "open_label": urls["open_label"],
             })
             if len(items) >= limit:
                 break
@@ -5749,6 +6538,7 @@ def admin_render_history(password: str = "", limit: int = 100) -> dict:
         "feedback_dir": "cloud_data/feedback/",
         "generations_dir": "cloud_data/generations/",
         "per_project_history_dir": "cloud_data/projects/<id>/output/history/",
+        "studio_only": only_studio,
         "items": items,
     }
 
@@ -6137,10 +6927,11 @@ ADMIN_HTML = r"""
 <header>
   <div>
     <h1>История сессий и размещений</h1>
-    <div class="muted" id="subtitle">NITEOS Admin</div>
+    <div class="muted" id="subtitle">Все прошлые расчёты · AI Studio также в отдельном окне</div>
   </div>
   <div class="row">
-    <a class="muted" href="/dealer" style="color:#9ec5ff;text-decoration:none">← К генерации</a>
+    <a class="muted" href="/admin/studio" style="color:#9ec5ff;text-decoration:none">AI Studio →</a>
+    <a class="muted" href="/dealer" style="color:#9ec5ff;text-decoration:none">← К dealer</a>
     <button type="button" class="secondary" id="logoutBtn" onclick="logout()">Выйти</button>
   </div>
 </header>
@@ -6173,8 +6964,9 @@ ADMIN_HTML = r"""
   <div class="row" style="margin-bottom:14px">
     <select id="filterMode" onchange="reload()">
       <option value="">Все режимы</option>
-      <option value="auto">Только авто</option>
-      <option value="manual">Только вручную</option>
+      <option value="agent_studio">Только AI Studio</option>
+      <option value="auto">Только авто (эталоны)</option>
+      <option value="manual">Только вручную / dealer</option>
     </select>
     <select id="filterVote" onchange="reload()">
       <option value="">Любой feedback</option>
@@ -6238,13 +7030,24 @@ function matchesFilters(item){
   const mode = document.getElementById('filterMode').value;
   const vote = document.getElementById('filterVote').value;
   const wm = (item.work_mode || '').toLowerCase();
+  const studio = !!(item.agent_studio || item.source_studio === 'agent_studio' || wm === 'agent_studio' || String(item.kind || '').startsWith('studio_'));
+  // Показываем всю историю как раньше; AI Studio дополнительно есть в /admin/studio
+  if(mode === 'agent_studio' && !studio) return false;
   if(mode === 'auto' && wm !== 'auto') return false;
-  if(mode === 'manual' && wm === 'auto') return false;
+  if(mode === 'manual' && (wm === 'auto' || studio)) return false;
   const v = (item.feedback_vote || item.last_feedback_vote || '').toLowerCase();
   if(vote === 'like' && v !== 'like') return false;
   if(vote === 'dislike' && v !== 'dislike') return false;
   if(vote === 'none' && v) return false;
   return true;
+}
+function openProjectLink(item){
+  const studio = !!(item.agent_studio || item.source_studio === 'agent_studio' || (item.work_mode||'') === 'agent_studio' || String(item.kind||'').startsWith('studio_'));
+  const href = studio
+    ? (item.studio_url || item.open_url || item.dealer_url || '#')
+    : (item.dealer_url || item.open_url || '#');
+  const label = studio ? 'Открыть в AI Studio' : 'Открыть в dealer';
+  return `<a href="${esc(href)}" target="_blank">${esc(label)}</a>`;
 }
 function voteHtml(v){
   if(v==='like') return '<span class="vote like">👍 like</span>';
@@ -6329,7 +7132,7 @@ function renderSessions(){
           ${s.last_feedback_contact ? `<br>контакт: ${esc(s.last_feedback_contact)}` : ''}
         </div>
         <div class="actions">
-          <a href="${esc(s.dealer_url)}" target="_blank">Открыть в dealer</a>
+          ${openProjectLink(s)}
           ${s.style_url ? `<a href="${esc(s.style_url)}" target="_blank">Эталон</a>` : ''}
         </div>
       </div>
@@ -6362,7 +7165,7 @@ function renderHistory(){
         </div>
         ${(h.prompt || h.prompt_preview) ? `<details><summary>Промпт (${esc((h.prompt || '').length || (h.prompt_preview || '').length)} симв.)</summary><pre>${esc(h.prompt || h.prompt_preview || '')}</pre></details>` : ''}
         <div class="actions">
-          <a href="${esc(h.dealer_url)}" target="_blank">Открыть проект</a>
+          ${openProjectLink(h)}
           ${h.source_url ? `<a href="${esc(h.source_url)}" target="_blank">Source</a>` : ''}
           ${h.url ? `<a href="${esc(h.url)}" target="_blank">Рендер</a>` : ''}
           ${h.prompt_url ? `<a href="${esc(h.prompt_url)}" target="_blank">prompt.txt</a>` : ''}
@@ -6397,6 +7200,291 @@ async function boot(){
     document.getElementById('app').classList.remove('hidden');
     document.getElementById('subtitle').textContent = 'Данные с сервера · cloud_data/projects';
     await loadFinetuneStats();
+    showTab(tab);
+    reload();
+  }catch(err){
+    document.getElementById('loginBox').classList.remove('hidden');
+    document.getElementById('app').classList.add('hidden');
+    showLoginErr(String(err.message || err));
+  }
+}
+if(password) boot();
+</script>
+</body>
+</html>
+"""
+
+
+ADMIN_STUDIO_HTML = r"""
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <title>NITEOS Admin · AI Studio</title>
+  <style>
+    :root{--bg:#070a0e;--panel:#0d1218;--line:#27313b;--text:#e8eef6;--muted:#9aa6b2;--accent:#f5b942;--accent2:#5a8fd4}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 Segoe UI,Arial,sans-serif}
+    header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line);background:#0a0e14}
+    h1{margin:0;font-size:18px}
+    .muted{color:var(--muted)}
+    .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    input,select,button{border-radius:10px;border:1px solid var(--line);background:#121820;color:var(--text);padding:9px 12px;font:inherit}
+    button{cursor:pointer;background:var(--accent);color:#111;font-weight:700;border:0}
+    button.secondary{background:#151b22;color:var(--text);border:1px solid var(--line)}
+    main{padding:18px 20px 40px;max-width:1280px;margin:0 auto}
+    .stats{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 16px}
+    .stat{border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:var(--panel);min-width:120px}
+    .stat b{display:block;font-size:20px}
+    .tabs{display:flex;gap:8px;margin:0 0 14px}
+    .tabs button{background:#151b22;color:var(--text);border:1px solid var(--line)}
+    .tabs button.active{background:#2a2418;border-color:var(--accent);color:#ffe6a8}
+    .badge{display:inline-block;padding:2px 8px;border-radius:999px;background:#2a2418;color:#f5b942;font-size:11px;font-weight:700}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+    .card{border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden;display:flex;flex-direction:column}
+    .thumbs{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);position:relative}
+    .thumbs a,.thumbs div{background:#030405;min-height:120px;display:grid;place-items:center;color:var(--muted);font-size:12px;position:relative}
+    .thumbs img{width:100%;height:120px;object-fit:cover;display:block}
+    .thumbs .cap{position:absolute;left:6px;bottom:6px;background:rgba(0,0,0,.65);padding:2px 6px;border-radius:6px;font-size:10px;color:#dce6f0}
+    .body{padding:12px;display:grid;gap:6px}
+    .body .title{font-weight:700;font-size:13px;word-break:break-all}
+    .meta{font-size:12px;color:var(--muted);line-height:1.45}
+    .vote.like{color:#8fd48f}.vote.dislike{color:#e89a9a}
+    .actions{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap}
+    .actions a{font-size:12px;color:#9ec5ff;text-decoration:none}
+    .list{display:grid;gap:12px}
+    .hist{display:grid;grid-template-columns:160px 1fr;gap:12px;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:10px;align-items:start}
+    .hist-visual{position:relative}
+    .hist-visual img{width:160px;height:100px;object-fit:cover;border-radius:8px;background:#030405;display:block}
+    .hist-visual .ann{position:absolute;inset:0;border-radius:8px;opacity:.9;pointer-events:none}
+    .hist details{margin-top:8px}
+    .hist pre{white-space:pre-wrap;word-break:break-word;max-height:220px;overflow:auto;background:#070a0e;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:11px;color:#c8d4e0}
+    .empty{padding:28px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);text-align:center}
+    .err{color:#e89a9a;margin:8px 0}
+    .login{max-width:420px;margin:12vh auto;padding:24px;border:1px solid var(--line);border-radius:16px;background:var(--panel)}
+    .login h2{margin:0 0 8px;font-size:20px}
+    .login p{margin:0 0 14px}
+    .login .row{margin-top:10px}
+    .hidden{display:none}
+    .lead{margin:0 0 14px;color:var(--muted);font-size:13px;max-width:720px}
+  </style>
+</head>
+<body>
+{{MAX_GROUP_WIDGET}}
+<header>
+  <div>
+    <h1>История · AI Studio</h1>
+    <div class="muted" id="subtitle">Исходник → результат · чат-правки · без каталога эталонов</div>
+  </div>
+  <div class="row">
+    <a class="muted" href="/admin" style="color:#9ec5ff;text-decoration:none">← Референс / dealer</a>
+    <a class="muted" href="/studio" style="color:#9ec5ff;text-decoration:none">Открыть AI Studio</a>
+    <button type="button" class="secondary" onclick="logout()">Выйти</button>
+  </div>
+</header>
+
+<div class="login" id="loginBox">
+  <h2>Вход · AI Studio Admin</h2>
+  <p class="muted">Пароль из `.env` — `CATALOG_ADMIN_PASSWORD`.</p>
+  <input id="passwordInput" type="password" placeholder="Пароль" style="width:100%" onkeydown="if(event.key==='Enter')login()">
+  <div class="row">
+    <button type="button" onclick="login()">Открыть</button>
+  </div>
+  <div class="err hidden" id="loginErr"></div>
+</div>
+
+<main id="app" class="hidden">
+  <p class="lead">Это отдельное окно только для AI Studio: дневное фото → ночной результат, оценка и правки чатом. Каталог эталонов dealer здесь не показывается.</p>
+  <div class="stats" id="stats"></div>
+  <div class="tabs">
+    <button type="button" class="active" id="tabSessions" onclick="showTab('sessions')">Сессии AI Studio</button>
+    <button type="button" id="tabHistory" onclick="showTab('history')">Версии / правки</button>
+  </div>
+  <div class="row" style="margin-bottom:14px">
+    <select id="filterVote" onchange="reload()">
+      <option value="">Любой feedback</option>
+      <option value="like">Like</option>
+      <option value="dislike">Dislike</option>
+      <option value="none">Без оценки</option>
+    </select>
+    <button type="button" class="secondary" onclick="boot()">Обновить</button>
+  </div>
+  <div id="sessionsView"></div>
+  <div id="historyView" class="hidden"></div>
+  <div class="err hidden" id="loadErr"></div>
+</main>
+
+<script>
+const PASS_KEY = 'niteos_admin_pass';
+let password = localStorage.getItem(PASS_KEY) || '';
+let tab = 'sessions';
+let sessions = [];
+let historyItems = [];
+let stats = {};
+
+function esc(s){
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function qs(extra){
+  const p = new URLSearchParams({password, studio_only: '1', ...(extra||{})});
+  return p.toString();
+}
+async function api(path){
+  const res = await fetch(path);
+  const data = await res.json().catch(()=>({}));
+  if(!res.ok) throw new Error(data.detail || res.statusText || 'Ошибка');
+  return data;
+}
+function login(){
+  password = (document.getElementById('passwordInput').value || '').trim();
+  if(!password){ showLoginErr('Введите пароль'); return; }
+  localStorage.setItem(PASS_KEY, password);
+  boot();
+}
+function logout(){
+  localStorage.removeItem(PASS_KEY);
+  password = '';
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('loginBox').classList.remove('hidden');
+}
+function showLoginErr(msg){
+  const el = document.getElementById('loginErr');
+  el.textContent = msg;
+  el.classList.toggle('hidden', !msg);
+}
+function showTab(name){
+  tab = name;
+  document.getElementById('tabSessions').classList.toggle('active', name==='sessions');
+  document.getElementById('tabHistory').classList.toggle('active', name==='history');
+  document.getElementById('sessionsView').classList.toggle('hidden', name!=='sessions');
+  document.getElementById('historyView').classList.toggle('hidden', name!=='history');
+}
+function matchesVote(item){
+  const vote = document.getElementById('filterVote').value;
+  const v = (item.feedback_vote || item.last_feedback_vote || '').toLowerCase();
+  if(vote === 'like' && v !== 'like') return false;
+  if(vote === 'dislike' && v !== 'dislike') return false;
+  if(vote === 'none' && v) return false;
+  return true;
+}
+function voteHtml(v){
+  if(v==='like') return '<span class="vote like">👍 like</span>';
+  if(v==='dislike') return '<span class="vote dislike">👎 dislike</span>';
+  return '<span class="muted">без оценки</span>';
+}
+function feedbackStatusHtml(h){
+  const st = (h.feedback_status || '').toLowerCase();
+  if(st === 'submitted' || h.feedback_vote) return voteHtml(h.feedback_vote || h.last_feedback_vote);
+  if(st === 'skipped') return '<span class="muted">оценка пропущена</span>';
+  return '<span class="muted">ожидает оценку</span>';
+}
+function kindLabel(kind){
+  const k = String(kind || '');
+  if(k === 'studio_render') return 'Первая генерация';
+  if(k === 'studio_edit') return 'Правка чатом / разметкой';
+  if(k === 'studio_regenerate') return 'Перегенерация';
+  if(k === 'studio_paste') return 'Вставка фото';
+  return k || 'версия';
+}
+function renderStats(){
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><b>${stats.sessions ?? 0}</b><span class="muted">сессий AI Studio</span></div>
+    <div class="stat"><b>${stats.withFinal ?? 0}</b><span class="muted">с результатом</span></div>
+    <div class="stat"><b>${stats.history ?? 0}</b><span class="muted">версий</span></div>
+    <div class="stat"><b>${stats.feedback ?? 0}</b><span class="muted">feedback файлов</span></div>
+  `;
+}
+function renderSessions(){
+  const items = sessions.filter(matchesVote);
+  const box = document.getElementById('sessionsView');
+  if(!items.length){
+    box.innerHTML = '<div class="empty">Сессий AI Studio пока нет</div>';
+    return;
+  }
+  box.innerHTML = `<div class="grid">${items.map(s => `
+    <article class="card">
+      <div class="thumbs">
+        ${s.source_url ? `<a href="${esc(s.source_url)}" target="_blank"><img src="${esc(s.source_url)}?t=1" alt="source"><span class="cap">Исходник</span></a>` : `<div>нет исходника</div>`}
+        ${s.final_url ? `<a href="${esc(s.final_url)}" target="_blank"><img src="${esc(s.final_url)}?t=1" alt="final"><span class="cap">Результат</span></a>` : `<div>нет результата</div>`}
+      </div>
+      <div class="body">
+        <div class="title"><span class="badge">AI Studio</span> ${esc(s.project_name || s.project_id)}</div>
+        <div class="meta">
+          ${esc(s.updated_at || '')}<br>
+          модель: ${esc(s.routerai_model || '—')}<br>
+          стиль агента: ${esc(s.matched_ref_title || s.matched_ref_cluster || 'подобран автоматически')}<br>
+          версий: ${esc(s.render_history_count || 0)} · ${voteHtml(s.last_feedback_vote)}
+          ${s.last_feedback_comment ? `<br>комментарий: ${esc(s.last_feedback_comment)}` : ''}
+        </div>
+        <div class="actions">
+          <a href="${esc(s.studio_url || s.open_url || ('/studio?project=' + s.project_id))}" target="_blank">Открыть в AI Studio</a>
+          ${s.source_url ? `<a href="${esc(s.source_url)}" target="_blank">Исходник</a>` : ''}
+          ${s.final_url ? `<a href="${esc(s.final_url)}" target="_blank">Результат</a>` : ''}
+        </div>
+      </div>
+    </article>
+  `).join('')}</div>`;
+}
+function renderHistory(){
+  const items = historyItems.filter(matchesVote);
+  const box = document.getElementById('historyView');
+  if(!items.length){
+    box.innerHTML = '<div class="empty">Версий AI Studio по фильтру нет</div>';
+    return;
+  }
+  box.innerHTML = `<div class="list">${items.map(h => `
+    <article class="hist">
+      <div class="hist-visual">
+        ${h.url ? `<a href="${esc(h.url)}" target="_blank"><img src="${esc(h.url)}?t=1" alt=""></a>` : `<div class="muted">нет файла</div>`}
+        ${h.annotation_url ? `<img class="ann" src="${esc(h.annotation_url)}?t=1" alt="разметка">` : ''}
+      </div>
+      <div>
+        <div class="title"><span class="badge">${esc(kindLabel(h.kind))}</span> #${esc(h.history_id)} · ${esc(h.project_id)}</div>
+        <div class="meta">
+          ${esc(h.created_at || '')}<br>
+          модель: ${esc(h.routerai_model || '—')}<br>
+          стиль агента: ${esc(h.matched_ref_title || h.matched_ref_cluster || '—')}<br>
+          ${h.annotation_url ? 'есть разметка кисти/ластика<br>' : ''}
+          ${feedbackStatusHtml(h)}
+          ${h.feedback_comment ? `<br><b>комментарий:</b> ${esc(h.feedback_comment)}` : ''}
+          ${h.note ? `<br><b>запрос:</b> ${esc(h.note)}` : ''}
+        </div>
+        ${(h.prompt || h.prompt_preview) ? `<details><summary>Промпт</summary><pre>${esc(h.prompt || h.prompt_preview || '')}</pre></details>` : ''}
+        <div class="actions">
+          <a href="${esc(h.studio_url || ('/studio?project=' + h.project_id))}" target="_blank">Открыть в AI Studio</a>
+          ${h.source_url ? `<a href="${esc(h.source_url)}" target="_blank">Исходник</a>` : ''}
+          ${h.url ? `<a href="${esc(h.url)}" target="_blank">Результат</a>` : ''}
+          ${h.annotation_url ? `<a href="${esc(h.annotation_url)}" target="_blank">Разметка</a>` : ''}
+        </div>
+      </div>
+    </article>
+  `).join('')}</div>`;
+}
+function reload(){
+  renderStats();
+  renderSessions();
+  renderHistory();
+}
+async function boot(){
+  showLoginErr('');
+  try{
+    const [sess, hist] = await Promise.all([
+      api('/api/admin/sessions?' + qs({limit:100})),
+      api('/api/admin/render-history?' + qs({limit:200})),
+    ]);
+    sessions = sess.items || [];
+    historyItems = hist.items || [];
+    stats = {
+      sessions: sessions.length,
+      withFinal: sessions.filter(s => s.has_final).length,
+      history: hist.count || historyItems.length,
+      feedback: hist.feedback_files || 0,
+    };
+    document.getElementById('loginBox').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    document.getElementById('subtitle').textContent = 'Только AI Studio · cloud_data/projects';
     showTab(tab);
     reload();
   }catch(err){
@@ -6577,10 +7665,18 @@ DEALER_HTML = r"""
     .render-history-strip{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 8px}
     .render-history-strip::-webkit-scrollbar{height:7px}
     .render-history-strip::-webkit-scrollbar-thumb{background:#34404c;border-radius:4px}
-    .render-history-item{flex:0 0 108px;border:2px solid #27313b;border-radius:10px;background:#070a0e;padding:6px;cursor:pointer;text-align:left}
+    .render-history-item{flex:0 0 148px;border:2px solid #27313b;border-radius:10px;background:#070a0e;padding:6px;cursor:pointer;text-align:left}
     .render-history-item:hover,.render-history-item.active{border-color:#5a7a9a;box-shadow:0 0 0 2px rgba(90,122,154,.22)}
-    .render-history-item img{display:block;width:100%;height:68px;object-fit:cover;border-radius:6px;background:#030405;margin-bottom:5px}
+    .render-history-item img{display:block;width:100%;height:78px;object-fit:cover;border-radius:6px;background:#030405;margin-bottom:5px}
     .render-history-item span{display:block;font-size:10px;color:#9aa6b2;line-height:1.25}
+    .render-history-item .hist-vote{margin-top:4px;font-weight:700}
+    .render-history-item .hist-vote.like{color:#8fd48f}
+    .render-history-item .hist-vote.dislike{color:#e89a9a}
+    .render-history-item .hist-vote.pending{color:#f5b942}
+    .render-history-item .hist-comment{margin-top:3px;color:#b7c2ce;font-size:10px;line-height:1.3;max-height:2.6em;overflow:hidden}
+    .history-feedback-detail{margin:8px 0 0;padding:10px 12px;border:1px solid #2b333d;border-radius:10px;background:#090d12;font-size:12px;color:#c8d4e0;line-height:1.45}
+    .history-feedback-detail.hidden{display:none}
+    .history-feedback-detail b{color:#e8eef6}
     .edit-markup-panel{border:1px solid #3a4d63;border-radius:14px;padding:12px;margin:12px 0;background:#070a0e}
     .edit-markup-panel.hidden{display:none}
     .edit-markup-toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
@@ -6622,7 +7718,10 @@ DEALER_HTML = r"""
     .back-link:hover{text-decoration:none;background:#e8eef6}
     .page-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;position:relative;z-index:5;flex-wrap:wrap}
     .page-head h1{margin:0}
-    .page-head .head-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;position:relative;z-index:5}
+    .page-head .head-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;position:relative;z-index:5;justify-content:flex-end}
+    .sales-hint{max-width:min(420px,58vw);font-size:12px;line-height:1.4;color:#9aa8b8;text-align:right}
+    .sales-hint a{color:#f5b942;font-weight:700;text-decoration:none;white-space:nowrap}
+    .sales-hint a:hover{text-decoration:underline}
     .help-btn{width:auto;margin:0;padding:8px 12px;font-size:12px}
     .help-btn-promo{background:linear-gradient(135deg,#f5b942,#e88a12);color:#1a1000;border:1px solid #f5c966;border-radius:10px;padding:9px 16px;font:inherit;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 2px 12px rgba(245,185,66,.32);flex-shrink:0}
     .help-btn-promo:hover{filter:brightness(1.06)}
@@ -6841,6 +7940,7 @@ DEALER_HTML = r"""
     .contact-cta-panel .lead{color:#b8c4d0;font-size:14px;line-height:1.55;margin:0 0 14px}
     .feedback-zone{border:1px solid #2b333d;background:#090d12;border-radius:14px;padding:18px;margin-top:16px}
     .feedback-zone.hidden{display:none}
+    .feedback-zone.required{border-color:#f5b942;box-shadow:0 0 0 2px rgba(245,185,66,.22)}
     .feedback-zone h2{margin:0 0 6px;font-size:18px}
     .feedback-zone .lead{margin:0 0 12px;font-size:13px;color:#9aa8b8}
     .feedback-votes{display:flex;gap:10px;margin:0 0 12px;flex-wrap:wrap}
@@ -6920,6 +8020,7 @@ DEALER_HTML = r"""
       <div class="muted" id="projectInfo">Новая генерация · режим шаблонов</div>
     </div>
     <div class="head-actions">
+      <div class="sales-hint">Хотите узнать подробнее о цене этой концепции — позвоните по номеру <a href="tel:{{CONTACT_PHONE_TEL}}">{{CONTACT_PHONE}}</a></div>
       <a class="help-btn-promo" id="studioLink" href="/studio" style="text-decoration:none;display:inline-flex;align-items:center">AI-студия</a>
       <button class="help-btn-promo" id="helpBtnPromo" onclick="openGuidedTour()">Как это работает?</button>
     </div>
@@ -7105,12 +8206,14 @@ DEALER_HTML = r"""
       <canvas id="editMarkupCanvas" class="result-markup-canvas hidden" aria-hidden="true"></canvas>
     </div>
     <div class="render-history-panel hidden" id="renderHistoryPanel">
-      <div class="render-history-head">История генераций в этом проекте</div>
+      <div class="render-history-head">История генераций · оценка и комментарий к каждому фото</div>
       <div class="render-history-strip" id="renderHistoryStrip"></div>
+      <div class="history-feedback-detail hidden" id="historyFeedbackDetail"></div>
     </div>
     <div class="tool-row result-actions-row">
       <button class="secondary" onclick="regenerate()" id="regenerateBtn" style="display:none">Перегенерировать</button>
-      <button class="secondary" onclick="downloadFinal()">Скачать</button>
+      <button class="secondary" onclick="downloadFinal()" id="downloadFinalBtn">Скачать</button>
+      <button class="secondary" onclick="copyFinal()" id="copyFinalBtn" title="Скопировать результат в буфер обмена">Копировать</button>
       <button type="button" class="help-btn-promo result-edit-btn" id="editModeToggleBtn" onclick="toggleEditMode()" disabled title="Сначала дождитесь результата">Доработать результат</button>
     </div>
     <div class="render-used-block hidden" id="renderUsedBlock" aria-hidden="true" style="display:none">
@@ -7144,8 +8247,8 @@ DEALER_HTML = r"""
   </section>
 
   <section class="feedback-zone hidden" id="feedbackZone">
-    <h2 id="feedbackTitle">Обратная связь</h2>
-    <p class="lead muted" id="feedbackLead">Нравится результат или нет? Оценка поможет улучшить сервис.</p>
+    <h2 id="feedbackTitle">Оценка этой генерации</h2>
+    <p class="lead muted" id="feedbackLead">Поставьте оценку перед следующей генерацией или доработкой. Комментарий необязателен — он сохранится рядом с фото в истории.</p>
     <div class="feedback-votes" id="feedbackVotes" role="group" aria-label="Нравится или не нравится">
       <button type="button" class="like" id="feedbackLikeBtn" onclick="setFeedbackVote('like')">Нравится</button>
       <button type="button" class="dislike" id="feedbackDislikeBtn" onclick="setFeedbackVote('dislike')">Не нравится</button>
@@ -7206,7 +8309,7 @@ let feedbackVote = '';
 let feedbackTimer = null;
 let feedbackPromptedHistoryId = '';
 let feedbackToastDismissedFor = '';
-const FEEDBACK_TOAST_DELAY_MS = 60000;
+const FEEDBACK_TOAST_DELAY_MS = 8000;
 const setStatus = (t) => { document.getElementById('statusText').textContent = t; };
 function setFeedbackVote(vote){
   feedbackVote = (vote === 'like' || vote === 'dislike') ? vote : '';
@@ -7214,6 +8317,17 @@ function setFeedbackVote(vote){
   const dislikeBtn = document.getElementById('feedbackDislikeBtn');
   if(likeBtn) likeBtn.classList.toggle('active', feedbackVote === 'like');
   if(dislikeBtn) dislikeBtn.classList.toggle('active', feedbackVote === 'dislike');
+}
+function promptFeedbackRequired(message){
+  const msg = message || 'Сначала оцените предыдущий результат.';
+  setStatus(msg);
+  const zone = document.getElementById('feedbackZone');
+  if(zone){
+    zone.classList.remove('hidden');
+    zone.classList.add('required');
+    zone.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+  showFeedbackToast();
 }
 async function submitFeedback(){
   const statusEl = document.getElementById('feedbackStatus');
@@ -7232,7 +8346,7 @@ async function submitFeedback(){
     fd.append('comment', (document.getElementById('feedbackComment') || {}).value || '');
     fd.append('contact', (document.getElementById('feedbackContact') || {}).value || '');
     await api(`/api/projects/${projectId}/feedback`, {method:'POST', body:fd});
-    if(statusEl) statusEl.textContent = 'Спасибо! Оценка сохранена.';
+    if(statusEl) statusEl.textContent = 'Спасибо! Оценка сохранена к этой версии в истории.';
     if(btn) btn.disabled = true;
     dismissFeedbackToast();
     await refresh();
@@ -7268,21 +8382,23 @@ function scheduleFeedbackPrompt(state){
   feedbackTimer = null;
   if(!state || !state.has_final){
     zone.classList.add('hidden');
+    zone.classList.remove('required');
     hideFeedbackToast();
     feedbackPromptedHistoryId = '';
     feedbackToastDismissedFor = '';
     return;
   }
   zone.classList.remove('hidden');
-  zone.classList.remove('required');
   const title = document.getElementById('feedbackTitle');
   const lead = document.getElementById('feedbackLead');
-  if(title) title.textContent = 'Обратная связь';
-  if(lead) lead.textContent = 'Нравится результат или нет? Оценка поможет улучшить сервис.';
+  if(title) title.textContent = 'Оценка этой генерации';
+  if(lead) lead.textContent = 'Поставьте оценку перед следующей генерацией или доработкой. Комментарий необязателен — он сохранится рядом с фото в истории.';
   if(!state.feedback_required){
+    zone.classList.remove('required');
     hideFeedbackToast();
     return;
   }
+  zone.classList.add('required');
   const history = state.last_history_entry || {};
   const renderId = String(history.id || state.updated_at || 'current');
   const isNew = feedbackPromptedHistoryId !== renderId;
@@ -7297,11 +8413,16 @@ function scheduleFeedbackPrompt(state){
     if(issue) issue.value = '';
     if(comment) comment.value = '';
     if(contact) contact.value = '';
-    if(statusEl) statusEl.textContent = '';
+    if(statusEl) statusEl.textContent = 'Оцените результат, чтобы продолжить генерации.';
     feedbackPromptedHistoryId = renderId;
     const btn = document.getElementById('feedbackSubmitBtn');
     if(btn) btn.disabled = false;
     hideFeedbackToast();
+    setTimeout(() => {
+      if(lastProjectState && lastProjectState.feedback_required){
+        zone.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+    }, 450);
   }
   if(feedbackToastDismissedFor === renderId) return;
   feedbackTimer = setTimeout(() => {
@@ -8347,7 +9468,7 @@ async function loadRouterModels(){
     }).join('');
     const rawSaved = localStorage.getItem('niteos_routerai_model') || '';
     // Мягкая миграция на новый default (Gemini 3.1 preview)
-    const migrateFrom = !rawSaved || rawSaved === 'google/gemini-2.5-flash-image';
+    const migrateFrom = !rawSaved || rawSaved === 'google/gemini-2.5-flash-image' || rawSaved.indexOf('gemini-2.5') >= 0;
     const saved = normalizeRouteraiModel(
       keep || (migrateFrom ? (data.default || '') : rawSaved) || data.default || ''
     );
@@ -8469,6 +9590,8 @@ async function generateVisualization(){
     if(err.status === 429){
       setStatus(err.message);
       refreshRenderLimit();
+    } else if(err.status === 409){
+      promptFeedbackRequired(err.message);
     } else {
       setStatus('Ошибка: ' + err.message);
     }
@@ -8509,6 +9632,26 @@ async function exportEditAnnotationBlob(){
     out.toBlob((blob) => resolve(blob || null), 'image/png');
   });
 }
+function waitForImage(img, timeoutMs){
+  return new Promise((resolve) => {
+    if(!img){ resolve(false); return; }
+    let done = false;
+    const finish = (ok) => {
+      if(done) return;
+      done = true;
+      try{ img.removeEventListener('load', onLoad); }catch(_){}
+      try{ img.removeEventListener('error', onErr); }catch(_){}
+      if(timer) clearTimeout(timer);
+      resolve(!!ok);
+    };
+    const onLoad = () => finish(img.naturalWidth > 0);
+    const onErr = () => finish(false);
+    const timer = setTimeout(() => finish(img.complete && img.naturalWidth > 0), timeoutMs || 45000);
+    img.addEventListener('load', onLoad);
+    img.addEventListener('error', onErr);
+    if(img.complete && img.naturalWidth > 0) requestAnimationFrame(() => finish(true));
+  });
+}
 async function editRender(){
   await ensureProject();
   const btn = document.getElementById('dealerEditBtn');
@@ -8529,21 +9672,40 @@ async function editRender(){
   if(annotationBlob) fd.append('annotation_file', annotationBlob, 'edit_annotation.png');
   isGenerating = true;
   if(btn){ btn.disabled = true; btn.textContent = 'Доработка…'; }
-  showGenOverlay('Отправлена доработка результата...');
+  showGenOverlay('Отправлена доработка результата…');
+  let editOk = false;
   try{
     await api(`/api/projects/${projectId}/edit`, {method:'POST', body:fd});
     clearEditMarkup();
     if(editModeOpen) toggleEditMode(false);
-    setStatus('Доработанный результат готов');
     historyPreviewUrl = '';
-    refresh(); refreshPipelineLog(true);
+    showGenOverlay('Почти готово — загружаю новый результат…');
+    await refresh();
+    refreshPipelineLog(true);
+    const img = document.getElementById('finalImg');
+    if(img && currentFinalUrl){
+      if((img.getAttribute('src') || '') !== currentFinalUrl) img.src = currentFinalUrl;
+      await waitForImage(img, 60000);
+    }
+    editOk = true;
+    showGenOverlay('Готово — смотрите обновлённый результат');
+    setStatus('Доработанный результат готов');
+    await new Promise(r => setTimeout(r, 900));
+    try{
+      document.getElementById('resultZone')?.scrollIntoView({behavior:'smooth', block:'start'});
+    }catch(_){}
   }catch(err){
-    setStatus('Ошибка: ' + err.message);
+    if(err.status === 409){
+      promptFeedbackRequired(err.message);
+    } else {
+      setStatus('Ошибка: ' + err.message);
+    }
   }finally{
     isGenerating = false;
     hideGenOverlay();
     if(btn) btn.textContent = 'Отправить доработку';
     updateEditControls(lastProjectState);
+    if(editOk) setStatus('Доработанный результат готов — можно копировать или править дальше');
   }
 }
 async function previewAgentPlan(){
@@ -8770,6 +9932,38 @@ function historyKindLabel(kind){
   if(kind === 'regenerate') return 'Перегенерация';
   return 'Генерация';
 }
+function historyVoteLabel(h){
+  const vote = (h.feedback_vote || '').toLowerCase();
+  if(vote === 'like') return {cls:'like', text:'👍 Нравится'};
+  if(vote === 'dislike') return {cls:'dislike', text:'👎 Не нравится'};
+  const st = (h.feedback_status || '').toLowerCase();
+  if(st === 'skipped') return {cls:'pending', text:'Пропущено'};
+  return {cls:'pending', text:'⏳ Нет оценки'};
+}
+function showHistoryFeedbackDetail(h){
+  const box = document.getElementById('historyFeedbackDetail');
+  if(!box || !h) return;
+  const vote = historyVoteLabel(h);
+  const comment = (h.feedback_comment || '').trim();
+  const contact = (h.feedback_contact || '').trim();
+  const issue = (h.feedback_issue_type || '').trim();
+  box.classList.remove('hidden');
+  box.innerHTML = `<b>${esc(historyKindLabel(h.kind))} #${esc(String(h.id))}</b>
+    · <span class="hist-vote ${vote.cls}">${esc(vote.text)}</span>
+    ${comment ? `<div style="margin-top:6px"><b>Комментарий:</b> ${esc(comment)}</div>` : '<div style="margin-top:6px" class="muted">Комментария нет</div>'}
+    ${contact ? `<div><b>Контакт:</b> ${esc(contact)}</div>` : ''}
+    ${issue ? `<div><b>Тема:</b> ${esc(issue)}</div>` : ''}`;
+}
+function historyFileBare(file){
+  const raw = String(file || '').replace(/\\/g, '/').trim();
+  if(!raw) return '';
+  return raw.split('/').filter(Boolean).pop() || '';
+}
+function historyItemUrl(h){
+  const bare = historyFileBare(h && h.file);
+  if(!projectId || !bare) return '';
+  return `/api/projects/${projectId}/file/history/${encodeURIComponent(bare)}`;
+}
 function renderRenderHistory(history){
   const panel = document.getElementById('renderHistoryPanel');
   const strip = document.getElementById('renderHistoryStrip');
@@ -8778,27 +9972,63 @@ function renderRenderHistory(history){
   if(!items.length){
     panel.classList.add('hidden');
     strip.innerHTML = '';
+    const detail = document.getElementById('historyFeedbackDetail');
+    if(detail) detail.classList.add('hidden');
     return;
   }
   panel.classList.remove('hidden');
+  const stamp = Date.now();
   strip.innerHTML = items.map((h, idx) => {
-    const fname = (h.file || '').replace(/^history\//, '');
-    const url = `/api/projects/${projectId}/file/history/${encodeURIComponent(fname)}`;
+    const url = historyItemUrl(h);
+    if(!url) return '';
     const active = (!historyPreviewUrl && idx === items.length - 1) || historyPreviewUrl === url ? ' active' : '';
-    return `<button type="button" class="render-history-item${active}" onclick="previewHistoryItem('${esc(url)}', ${h.id})">
-      <img src="${url}?t=${Date.now()}" alt="">
-      <span>${esc(historyKindLabel(h.kind))} #${h.id}</span>
+    const vote = historyVoteLabel(h);
+    const comment = (h.feedback_comment || '').trim();
+    const shortComment = comment ? (comment.length > 48 ? comment.slice(0, 48) + '…' : comment) : '';
+    return `<button type="button" class="render-history-item${active}" data-hist-url="${esc(url)}" data-hist-id="${esc(String(h.id))}">
+      <img src="${esc(url)}?t=${stamp}" alt="" loading="lazy" onerror="this.style.opacity='.35'">
+      <span>${esc(historyKindLabel(h.kind))} #${esc(String(h.id))}</span>
       <span>${esc(routeraiModelShort(h.routerai_model || ''))}</span>
+      <span class="hist-vote ${vote.cls}">${esc(vote.text)}</span>
+      ${shortComment ? `<span class="hist-comment">${esc(shortComment)}</span>` : ''}
     </button>`;
   }).join('');
+  strip.querySelectorAll('.render-history-item[data-hist-url]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      previewHistoryItem(btn.getAttribute('data-hist-url') || '', btn.getAttribute('data-hist-id') || '');
+    });
+  });
+  const activeItem = items.find((h, idx) => {
+    const url = historyItemUrl(h);
+    return (!historyPreviewUrl && idx === items.length - 1) || historyPreviewUrl === url;
+  }) || items[items.length - 1];
+  showHistoryFeedbackDetail(activeItem);
 }
 function previewHistoryItem(url, id){
+  if(!url){
+    setStatus('Не удалось открыть версию: файл истории не найден');
+    return;
+  }
   historyPreviewUrl = url;
   const img = document.getElementById('finalImg');
-  if(img) img.src = url + '?t=' + Date.now();
+  const zone = document.getElementById('resultZone');
+  if(zone) zone.classList.remove('empty');
+  try{ clearEditMarkup(); }catch(_){}
+  if(img){
+    img.classList.remove('hidden');
+    const next = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+    img.onload = () => {
+      try{ if(editModeOpen) syncEditMarkupCanvas(); }catch(_){}
+    };
+    img.onerror = () => setStatus('Картинка версии #' + id + ' не загрузилась (404). Обновите страницу или выберите другую.');
+    img.src = next;
+  }
+  hideGenOverlay();
   setStatus(`Просмотр версии #${id} из истории. Текущий финал не изменён.`);
   if(lastProjectState && lastProjectState.render_history){
     renderRenderHistory(lastProjectState.render_history);
+    const item = (lastProjectState.render_history || []).find(h => String(h.id) === String(id));
+    if(item) showHistoryFeedbackDetail(item);
   }
 }
 function setEditTool(tool){
@@ -8933,7 +10163,49 @@ function exportEditComposite(){
   return out.toDataURL('image/png');
 }
 function downloadFinal(){
-  if(currentFinalUrl) window.open(currentFinalUrl, '_blank');
+  const url = historyPreviewUrl || currentFinalUrl;
+  if(url) window.open(url, '_blank');
+}
+async function blobToPngBlob(blob){
+  if(blob && blob.type === 'image/png') return blob;
+  const bmp = await createImageBitmap(blob);
+  const canvas = document.createElement('canvas');
+  canvas.width = bmp.width;
+  canvas.height = bmp.height;
+  canvas.getContext('2d').drawImage(bmp, 0, 0);
+  return await new Promise((resolve, reject) => {
+    canvas.toBlob((b) => b ? resolve(b) : reject(new Error('PNG convert failed')), 'image/png');
+  });
+}
+async function copyFinal(){
+  const url = historyPreviewUrl || currentFinalUrl;
+  if(!url){
+    setStatus('Нет результата для копирования');
+    return;
+  }
+  try{
+    const res = await fetch(url, {credentials:'same-origin'});
+    if(!res.ok) throw new Error('Не удалось загрузить изображение');
+    const png = await blobToPngBlob(await res.blob());
+    if(navigator.clipboard && window.ClipboardItem){
+      await navigator.clipboard.write([new ClipboardItem({'image/png': png})]);
+      setStatus('Фото скопировано в буфер. Вставьте через Ctrl+V.');
+      return;
+    }
+    throw new Error('clipboard');
+  }catch(err){
+    try{
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `niteos_result_${Date.now()}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setStatus('Буфер недоступен (нужен HTTPS). Файл скачан — откройте и скопируйте вручную.');
+    }catch(_){
+      setStatus('Копирование не удалось: ' + String(err.message || err));
+    }
+  }
 }
 
 function regenerate(){
@@ -9081,6 +10353,8 @@ async function refresh(){
   if(!historyPreviewUrl){
     document.getElementById('finalImg').src = currentFinalUrl;
   }
+  const copyBtn = document.getElementById('copyFinalBtn');
+  if(copyBtn) copyBtn.disabled = !(historyPreviewUrl || currentFinalUrl);
   renderRenderHistory(p.render_history || []);
   loadEditMarkupImage(final ? currentFinalUrl : '');
   updateEditControls(p);

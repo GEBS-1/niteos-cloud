@@ -65,7 +65,7 @@ def run_studio_start(base: Path, deps: StudioDeps, *, router_model: str = "") ->
     if not source.exists():
         raise RuntimeError("Upload a facade photo first")
 
-    deps.write_project_meta(base, {"work_mode": "agent_studio", "status": "studio_analyzing"})
+    deps.write_project_meta(base, {"work_mode": "agent_studio", "mode": "agent_studio", "agent_studio": True, "status": "studio_analyzing"})
     deps.append_pipeline_log(base, "studio_start", {})
 
     analysis, analyze_log = analyze_facade_for_studio(
@@ -139,13 +139,32 @@ def run_studio_start(base: Path, deps: StudioDeps, *, router_model: str = "") ->
         model=model,
     )
     deps.apply_niteos_watermark(final_path)
+    primary = matched[0] if matched else {}
+    scenario_name = ""
+    product_name = ""
+    try:
+        scenario_name = str(deps.client_scenario_by_id(scheme.get("scenario_id") or "").get("name") or "")
+    except Exception:
+        scenario_name = str(scheme.get("scenario_id") or "")
+    try:
+        meta_now = json.loads((base / "project.json").read_text(encoding="utf-8"))
+    except Exception:
+        meta_now = {}
+    product_name = str(meta_now.get("dealer_product_name") or scheme.get("product_id") or "")
     # Write catalog meta BEFORE history so the entry gets scenario/product/work_mode.
     deps.write_project_meta(base, {
         "status": "rendered",
+        "mode": "agent_studio",
         "work_mode": "agent_studio",
         "routerai_model": model,
         "render_scenario_id": scheme.get("scenario_id"),
+        "render_scenario_name": scenario_name,
         "render_product_id": scheme.get("product_id"),
+        "render_product_name": product_name,
+        "matched_ref_id": primary.get("id") or "",
+        "matched_ref_title": primary.get("title") or primary.get("id") or "",
+        "matched_ref_cluster": primary.get("cluster") or scheme.get("cluster") or "",
+        "reference_file": ref_rel or "references/agent_ref_primary.png",
         "agent_studio": True,
         "final": "output/final_imported_render.png",
         "last_placement_plan": placement,
@@ -274,7 +293,8 @@ def run_studio_chat(
     if intent.get("temperature"):
         state["temperature"] = intent["temperature"]
 
-    model = deps.resolve_routerai_model(router_model or state.get("routerai_model") or "")
+    # Prefer explicit request model, else current server default — never pin to stale project meta.
+    model = deps.resolve_routerai_model(router_model)
     history = None
 
     # Markup edits always go through edit path (not full regenerate), unless no final yet.
@@ -314,6 +334,14 @@ def run_studio_chat(
             render_prompt, images, final_path, project_base=base, model=model
         )
         deps.apply_niteos_watermark(final_path)
+        # Stamp AI Studio identity BEFORE history save (not after).
+        deps.write_project_meta(base, {
+            "mode": "agent_studio",
+            "work_mode": "agent_studio",
+            "agent_studio": True,
+            "routerai_model": model,
+            "last_placement_plan": placement,
+        })
         history = deps.save_render_history_entry(
             base, kind="studio_regenerate", note=(chat_text or model_text)[:200], prompt=render_prompt
         )
@@ -331,6 +359,14 @@ def run_studio_chat(
         # With markup, color-based instruction is built inside edit_project_render.
         # Pass only optional user text as a clarification note.
         edit_instruction = text if has_markup else revision
+        # Stamp AI Studio identity BEFORE edit history entry is written.
+        deps.write_project_meta(base, {
+            "mode": "agent_studio",
+            "work_mode": "agent_studio",
+            "agent_studio": True,
+            "routerai_model": model,
+            "last_placement_plan": placement,
+        })
         edited = deps.edit_project_render(
             base,
             edit_instruction,
@@ -349,6 +385,7 @@ def run_studio_chat(
         except Exception:
             history = None
         deps.write_project_meta(base, {
+            "mode": "agent_studio",
             "work_mode": "agent_studio",
             "agent_studio": True,
             "last_placement_plan": placement,
@@ -508,6 +545,8 @@ def get_studio_state(base: Path) -> dict:
         if not fname:
             continue
         bare = fname.replace("\\", "/").split("/")[-1]
+        ann_rel = str((item or {}).get("annotation_file") or "").replace("\\", "/")
+        ann_bare = ann_rel.split("/")[-1] if ann_rel else ""
         history_urls.append({
             "id": (item or {}).get("id") or bare,
             "url": f"/api/projects/{base.name}/file/history/{bare}",
@@ -515,8 +554,17 @@ def get_studio_state(base: Path) -> dict:
             "kind": (item or {}).get("kind") or "",
             "created_at": (item or {}).get("created_at") or "",
             "prompt": ((item or {}).get("prompt") or "")[:300],
-            "annotation_file": (item or {}).get("annotation_file") or "",
+            "annotation_file": ann_rel,
+            "annotation_url": (
+                f"/api/projects/{base.name}/file/history/{ann_bare}"
+                if ann_bare else ""
+            ),
             "active": str((item or {}).get("id")) == str(active_id),
+            "feedback_vote": (item or {}).get("feedback_vote") or "",
+            "feedback_comment": (item or {}).get("feedback_comment") or "",
+            "feedback_contact": (item or {}).get("feedback_contact") or "",
+            "feedback_status": (item or {}).get("feedback_status") or "",
+            "feedback_issue_type": (item or {}).get("feedback_issue_type") or "",
         })
     return {
         "ok": True,
@@ -527,9 +575,22 @@ def get_studio_state(base: Path) -> dict:
         "history": history_urls,
         "history_count": len(history),
         "active_history_id": active_id,
-        "feedback_required": bool(meta.get("feedback_required")),
-        "last_history_entry": meta.get("last_history_entry") or (history[-1] if history else {}),
+        # Derive from newest history vote — do not trust a one-shot meta flag
+        # (restore / old skips could clear it while the latest result is still unrated).
+        "feedback_required": (
+            bool(history)
+            and str(
+                ((history[-1] if isinstance(history[-1], dict) else {}) or {}).get("feedback_vote") or ""
+            ).strip().lower()
+            not in {"like", "dislike"}
+        ),
+        "last_history_entry": (
+            (history[-1] if history and isinstance(history[-1], dict) else None)
+            or meta.get("last_history_entry")
+            or {}
+        ),
         "last_feedback_vote": meta.get("last_feedback_vote") or "",
+        "routerai_model": (meta.get("routerai_model") or state.get("routerai_model") or ""),
         "reference_url": (
             f"/api/projects/{base.name}/file/references/agent_ref_primary.png"
             if (base / "references" / "agent_ref_primary.png").exists() else ""
